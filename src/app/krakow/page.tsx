@@ -1,7 +1,11 @@
+import { KrakowMap } from "./KrakowMap";
+
 type KrakowStation = {
   id: string;
   name: string;
   city: string;
+  latitude: number;
+  longitude: number;
 };
 
 type KrakowReading = {
@@ -174,27 +178,14 @@ export default async function KrakowDashboardPage() {
               </div>
             </div>
 
-            <div className="flex flex-1 flex-col gap-3 rounded-2xl border border-slate-800 bg-slate-900/70 px-4 py-3">
-              <h2 className="text-sm font-medium text-slate-100">
-                Historia, mapa i stacje — placeholder
-              </h2>
-              <p className="text-xs text-slate-400">
-                W kolejnych etapach tutaj pojawią się interaktywne wykresy
-                (Recharts / D3) oraz mapa stacji (Leaflet) oparta na danych z
-                Supabase. Na razie to miejsce pełni rolę szkicu layoutu.
-              </p>
-
-              {stations.length > 0 && (
-                <ul className="mt-1 grid gap-1 text-[11px] text-slate-400 sm:grid-cols-2">
-                  {stations.map((station) => (
-                    <li key={station.id} className="truncate">
-                      <span className="text-slate-300">{station.name}</span>
-                      <span className="text-slate-500"> · {station.city}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+            <KrakowMap
+              stations={stations.map((station) => ({
+                id: station.id,
+                name: station.name,
+                latitude: station.latitude,
+                longitude: station.longitude,
+              }))}
+            />
           </article>
         </section>
       </main>
