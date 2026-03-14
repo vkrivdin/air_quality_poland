@@ -1,2 +1,0 @@
-# air_quality_poland
-air_quality_poland
