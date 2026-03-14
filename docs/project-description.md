@@ -232,6 +232,7 @@ CREATE INDEX idx_readings_station_time ON readings(station_id, measured_at DESC)
 - Language preference stored in browser localStorage
 - All AQI level names, pollutant descriptions, and warnings translated
 - Date/number formatting locale-aware (Polish: `13 marca 2026`, English: `March 13, 2026`)
+- All data in the database (stations, cities, regions) is stored in correct Polish with diacritics (e.g. `Kraków`, `Łódź`), while search and filtering are implemented in a diacritic-insensitive way (e.g. user typing `Krakow` still finds `Kraków`)
 
 ---
 

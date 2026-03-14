@@ -59,11 +59,28 @@ export async function fetchAllGiosStations(): Promise<GiosStation[]> {
   const res = await fetch(url.toString());
 
   if (!res.ok) {
-    throw new Error(`Failed to fetch GIOŚ stations: ${res.status} ${res.statusText}`);
+    const body = await res.text();
+    throw new Error(
+      `Failed to fetch GIOŚ stations: ${res.status} ${res.statusText}. Body starts with: ${body.slice(
+        0,
+        120,
+      )}`,
+    );
   }
 
-  const data = (await res.json()) as GiosStationListResponse;
-  return data["Lista stacji pomiarowych"] ?? [];
+  const text = await res.text();
+
+  try {
+    const data = JSON.parse(text) as GiosStationListResponse;
+    return data["Lista stacji pomiarowych"] ?? [];
+  } catch (error) {
+    throw new Error(
+      `Unable to parse GIOŚ station response as JSON. Body starts with: ${text.slice(
+        0,
+        120,
+      )}`,
+    );
+  }
 }
 
 export async function importGiosStationsForCity(cityName: string) {

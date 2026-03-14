@@ -1,4 +1,59 @@
-export default function KrakowDashboardPage() {
+type KrakowStation = {
+  id: string;
+  name: string;
+  city: string;
+};
+
+type KrakowReading = {
+  station_id: string;
+  measured_at: string;
+  pm25: number | null;
+  pm10: number | null;
+  no2: number | null;
+  o3: number | null;
+  so2: number | null;
+  co: number | null;
+  aqi_value: number | null;
+  aqi_level: string | null;
+};
+
+async function loadKrakowStations(): Promise<KrakowStation[]> {
+  const res = await fetch("http://localhost:3000/api/krakow/stations", {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    return [];
+  }
+
+  const json = (await res.json()) as { stations?: KrakowStation[] };
+  return json.stations ?? [];
+}
+
+async function loadKrakowCurrentReading(): Promise<KrakowReading | null> {
+  const res = await fetch("http://localhost:3000/api/krakow/current", {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    return null;
+  }
+
+  const json = (await res.json()) as { status: string; reading?: KrakowReading };
+
+  if (json.status !== "ok" || !json.reading) {
+    return null;
+  }
+
+  return json.reading;
+}
+
+export default async function KrakowDashboardPage() {
+  const [stations, reading] = await Promise.all([
+    loadKrakowStations(),
+    loadKrakowCurrentReading(),
+  ]);
+
   return (
     <div className="min-h-screen bg-slate-950 px-4 py-8 text-slate-50">
       <main className="mx-auto flex w-full max-w-5xl flex-col gap-8">
@@ -17,11 +72,18 @@ export default function KrakowDashboardPage() {
             </p>
           </div>
 
-          <div className="rounded-full border border-slate-700 bg-slate-900 px-4 py-2 text-xs text-slate-300">
-            Status:{" "}
-            <span className="font-semibold text-sky-300">
-              tryb deweloperski (mock)
-            </span>
+          <div className="flex flex-col items-end gap-2 text-xs text-slate-300">
+            <div className="rounded-full border border-slate-700 bg-slate-900 px-4 py-2">
+              Status:{" "}
+              <span className="font-semibold text-sky-300">
+                {stations.length > 0 ? "połączono z Supabase (stacje GIOŚ)" : "tryb deweloperski (mock)"}
+              </span>
+            </div>
+            {stations.length > 0 && (
+              <p className="text-[11px] text-slate-400">
+                Źródło: {stations.length} stacji w Krakowie zapisanych w Supabase.
+              </p>
+            )}
           </div>
         </header>
 
@@ -34,12 +96,13 @@ export default function KrakowDashboardPage() {
                     Aktualny indeks jakości powietrza (AQI)
                   </h2>
                   <p className="mt-1 text-xs text-slate-400">
-                    Dane przykładowe — do podpięcia pod Supabase w fazie
-                    integracji.
+                    {reading
+                      ? "Dane z Supabase dla jednej stacji w Krakowie."
+                      : "Dane przykładowe — do podpięcia pod pełne dane w kolejnych etapach."}
                   </p>
                 </div>
                 <span className="rounded-full bg-slate-900/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-emerald-300">
-                  Kraków · demo
+                  Kraków · {reading ? "Supabase" : "demo"}
                 </span>
               </div>
 
@@ -49,10 +112,12 @@ export default function KrakowDashboardPage() {
                     AQI (PL)
                   </p>
                   <p className="mt-1 text-4xl font-semibold leading-none">
-                    42
+                    {reading?.aqi_value ?? 42}
                   </p>
                   <p className="mt-2 text-sm text-emerald-100">
-                    Bardzo dobry · możesz spokojnie wyjść na zewnątrz
+                    {reading
+                      ? `Poziom: ${reading.aqi_level ?? "unknown"}`
+                      : "Bardzo dobry · możesz spokojnie wyjść na zewnątrz"}
                   </p>
                 </div>
 
@@ -61,25 +126,33 @@ export default function KrakowDashboardPage() {
                     <p className="text-[10px] uppercase tracking-wide text-slate-400">
                       PM2.5
                     </p>
-                    <p className="mt-1 text-sm font-semibold">12 µg/m³</p>
+                    <p className="mt-1 text-sm font-semibold">
+                      {reading?.pm25 ?? 12} µg/m³
+                    </p>
                   </div>
                   <div className="rounded-xl bg-slate-900/70 px-3 py-2">
                     <p className="text-[10px] uppercase tracking-wide text-slate-400">
                       PM10
                     </p>
-                    <p className="mt-1 text-sm font-semibold">22 µg/m³</p>
+                    <p className="mt-1 text-sm font-semibold">
+                      {reading?.pm10 ?? 22} µg/m³
+                    </p>
                   </div>
                   <div className="rounded-xl bg-slate-900/70 px-3 py-2">
                     <p className="text-[10px] uppercase tracking-wide text-slate-400">
                       NO₂
                     </p>
-                    <p className="mt-1 text-sm font-semibold">18 µg/m³</p>
+                    <p className="mt-1 text-sm font-semibold">
+                      {reading?.no2 ?? 18} µg/m³
+                    </p>
                   </div>
                   <div className="rounded-xl bg-slate-900/70 px-3 py-2">
                     <p className="text-[10px] uppercase tracking-wide text-slate-400">
                       O₃
                     </p>
-                    <p className="mt-1 text-sm font-semibold">35 µg/m³</p>
+                    <p className="mt-1 text-sm font-semibold">
+                      {reading?.o3 ?? 35} µg/m³
+                    </p>
                   </div>
                 </div>
               </div>
@@ -103,13 +176,24 @@ export default function KrakowDashboardPage() {
 
             <div className="flex flex-1 flex-col gap-3 rounded-2xl border border-slate-800 bg-slate-900/70 px-4 py-3">
               <h2 className="text-sm font-medium text-slate-100">
-                Historia i mapa — placeholder
+                Historia, mapa i stacje — placeholder
               </h2>
               <p className="text-xs text-slate-400">
                 W kolejnych etapach tutaj pojawią się interaktywne wykresy
                 (Recharts / D3) oraz mapa stacji (Leaflet) oparta na danych z
                 Supabase. Na razie to miejsce pełni rolę szkicu layoutu.
               </p>
+
+              {stations.length > 0 && (
+                <ul className="mt-1 grid gap-1 text-[11px] text-slate-400 sm:grid-cols-2">
+                  {stations.map((station) => (
+                    <li key={station.id} className="truncate">
+                      <span className="text-slate-300">{station.name}</span>
+                      <span className="text-slate-500"> · {station.city}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </article>
         </section>

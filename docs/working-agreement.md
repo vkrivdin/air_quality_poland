@@ -22,6 +22,7 @@ This document defines how we work together on this project. It is a reference fo
 - Claude **never assumes a library is installed** — installation always comes before usage
 - All code is written in **TypeScript** (never plain JavaScript)
 - Every file Claude creates includes a **comment block at the top** explaining its purpose and role in the architecture
+- All SQL that Claude asks you to run is stored under the `sql/` directory as `.sql` files, so every schema change and seed script is versioned in Git and easy to re-run
 
 ---
 
