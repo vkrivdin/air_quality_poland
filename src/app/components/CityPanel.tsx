@@ -14,9 +14,132 @@
 
 import AqiBadge from "./AqiBadge";
 import AqiDashboardCard from "./AqiDashboardCard";
-import { giosLabelToKey } from "@/lib/aqi-config";
+import { giosLabelToKey, getLevelConfig, AQI_LEVEL_CONFIGS } from "@/lib/aqi-config";
+import type { AqiLevelKey, AqiLevelConfig } from "@/lib/aqi-config";
 import type { StationSummary, KrakowStation } from "@/lib/types";
 import type { Lang } from "./LanguageSwitcher";
+
+// ─── CitySummaryCard ──────────────────────────────────────────────────────────
+// Lightweight summary for non-Kraków cities. Works from StationSummary[] alone
+// — no hourly readings required. Shows dominant level, station breakdown,
+// best/worst station names, and data timestamp.
+
+type CitySummaryCardProps = {
+  stations: StationSummary[];
+  lang: Lang;
+};
+
+function CitySummaryCard({ stations, lang }: CitySummaryCardProps) {
+  // Count stations per level key
+  const counts: Partial<Record<AqiLevelKey, number>> = {};
+  for (const s of stations) {
+    const k = giosLabelToKey(s.aqi.level_name);
+    counts[k] = (counts[k] ?? 0) + 1;
+  }
+
+  // Dominant level = most common non-no_data level; fall back to no_data
+  const dominantKey = (Object.keys(AQI_LEVEL_CONFIGS) as AqiLevelKey[])
+    .reduce<AqiLevelKey | null>((best, key) => {
+      if (key === "no_data") return best;
+      if ((counts[key] ?? 0) > (best ? (counts[best] ?? 0) : 0)) return key;
+      return best;
+    }, null) ?? "no_data";
+
+  const cfg = getLevelConfig(dominantKey) as AqiLevelConfig;
+
+  // Best / worst station by aqi.score (lower = better)
+  const withScore = stations.filter(s => s.aqi.score !== null) as (StationSummary & { aqi: { score: number } })[];
+  withScore.sort((a, b) => a.aqi.score - b.aqi.score);
+  const bestStation  = withScore[0];
+  const worstStation = withScore[withScore.length - 1];
+
+  // Most recent calc_date across all stations
+  const latestDate = stations
+    .map(s => s.aqi.calc_date)
+    .filter(Boolean)
+    .sort()
+    .at(-1);
+
+  const dateStr = latestDate
+    ? new Date(latestDate).toLocaleString(lang === "pl" ? "pl-PL" : "en-GB", {
+        day: "numeric", month: "short", hour: "2-digit", minute: "2-digit",
+      })
+    : null;
+
+  // Station count breakdown label — e.g. "5 Dobry · 4 Brak danych"
+  const breakdownParts = (Object.entries(counts) as [AqiLevelKey, number][])
+    .sort(([a], [b]) => {
+      const order: AqiLevelKey[] = ["bardzo_dobry", "dobry", "umiarkowany", "zly", "bardzo_zly", "no_data"];
+      return order.indexOf(a) - order.indexOf(b);
+    })
+    .map(([key, count]) => {
+      const levelCfg = getLevelConfig(key) as AqiLevelConfig;
+      return `${count}\u00a0${lang === "pl" ? levelCfg.label_pl : levelCfg.label_en}`;
+    });
+
+  return (
+    <div style={{
+      borderRadius: 12,
+      border: `0.5px solid ${cfg.color.border}`,
+      overflow: "hidden",
+      marginBottom: 16,
+    }}>
+      {/* Coloured header band — same visual weight as AqiDashboardCard */}
+      <div style={{ background: cfg.color.bg, padding: "14px 16px" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+          <AqiBadge levelKey={dominantKey} showEnglish size="md" />
+          <span style={{ fontSize: 12, color: cfg.color.text, opacity: 0.8 }}>
+            {lang === "pl" ? "Dominujący poziom" : "Dominant level"}
+          </span>
+        </div>
+        {/* Level breakdown chips */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+          {breakdownParts.map((part, i) => (
+            <span key={i} style={{
+              fontSize: 11,
+              padding: "2px 8px",
+              borderRadius: 20,
+              background: "rgba(255,255,255,0.55)",
+              color: cfg.color.text,
+              border: `0.5px solid ${cfg.color.border}`,
+            }}>
+              {part}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Body — best / worst / timestamp */}
+      <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
+        {bestStation && (
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+            <span style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>
+              {lang === "pl" ? "Najlepsza stacja" : "Best station"}
+            </span>
+            <span style={{ fontSize: 12, fontWeight: 500, color: "var(--color-text-primary)", textAlign: "right", maxWidth: "60%" }}>
+              {bestStation.name}
+            </span>
+          </div>
+        )}
+        {worstStation && worstStation.id !== bestStation?.id && (
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+            <span style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>
+              {lang === "pl" ? "Najgorsza stacja" : "Worst station"}
+            </span>
+            <span style={{ fontSize: 12, fontWeight: 500, color: "var(--color-text-primary)", textAlign: "right", maxWidth: "60%" }}>
+              {worstStation.name}
+            </span>
+          </div>
+        )}
+        {dateStr && (
+          <div style={{ fontSize: 11, color: "var(--color-text-tertiary)", borderTop: "0.5px solid var(--color-border-tertiary)", paddingTop: 8, marginTop: 2 }}>
+            {lang === "pl" ? "Dane: GIOŚ · " : "Data: GIOŚ · "}{dateStr}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 type Props = {
   cityName: string;
@@ -89,7 +212,7 @@ export default function CityPanel({
       {/* ── Scrollable content ── */}
       <div style={{ flex: 1, overflowY: "auto", padding: 16 }}>
 
-        {/* Kraków full dashboard card */}
+        {/* Kraków: full AqiDashboardCard with hourly data */}
         {isKrakow && primarySummary && (
           <div style={{ marginBottom: 16 }}>
             <AqiDashboardCard
@@ -106,6 +229,11 @@ export default function CityPanel({
 
         {/* ── Station list ── */}
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {/* Non-Kraków: lightweight summary card derived from StationSummary[] */}
+          {!isKrakow && (
+            <CitySummaryCard stations={stations} lang={lang} />
+          )}
+
           {/* For Kraków, show "Other stations" header when there's more than 1 */}
           {isKrakow && stations.length > 1 && (
             <div style={{

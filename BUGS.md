@@ -72,6 +72,17 @@ It is a living document. Every entry follows the same structure.
 
 ---
 
+### BUG-5 — Non-Kraków city panel had no summary card
+**Date:** 2026-03-15
+**Phase:** Phase 7–8 wiring (caught during visual testing)
+**Symptom:** Selecting Kraków showed a full AqiDashboardCard with coloured header, activity matrix, and pollutant stats. Selecting any other city (e.g. Warszawa) showed only a flat station list with AQI badges — no summary, no context, no visual weight at the top of the panel.
+**Root cause:** `CityPanel.tsx` hard-gated the `AqiDashboardCard` behind `isKrakow` because only Kraków has hourly readings. No fallback summary was provided for cities with only `StationSummary[]` data.
+**Fix:** Added `CitySummaryCard` component inside `CityPanel.tsx`. For non-Kraków cities it computes dominant level, station count breakdown, best/worst station name, and latest `calc_date` directly from `StationSummary[]`. Same visual structure (coloured header band + body) as `AqiDashboardCard` — consistent weight without requiring hourly data.
+**Principle:** Every city view must open with a summary card above the station list. If hourly readings are unavailable, derive the summary from `StationSummary[]` (dominant level, breakdown, best/worst station). Never show a bare station list as the first thing in a city panel.
+**Added to AGENTS.md:** no
+
+---
+
 ## Promoted principles
 
 Principles that have appeared in two or more bugs are promoted to AGENTS.md and marked here.
