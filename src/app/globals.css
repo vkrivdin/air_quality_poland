@@ -9,6 +9,23 @@
   --border: #1f2937;
   --muted: #6b7280;
   --accent: #38bdf8;
+
+  /* Semantic colour tokens — used by Phase 2b+ components (light-theme UI chrome) */
+  --color-background-primary:   #ffffff;
+  --color-background-secondary: #f5f5f3;
+  --color-background-tertiary:  #eeede9;
+  --color-text-primary:         #1a1a18;
+  --color-text-secondary:       #6b6b67;
+  --color-text-tertiary:        #9b9b97;
+  --color-border-primary:       #d4d4cf;
+  --color-border-secondary:     #e0e0db;
+  --color-border-tertiary:      #eaeae6;
+
+  /* Polish identity tokens — use ONLY in: Navbar, PolishFlagIcon, SourceBadge, LanguageSwitcher */
+  --color-polish-red:       #D4213D;
+  --color-polish-red-hover: #B01C34;
+  --color-polish-red-tint:  #F5D0D6;
+  --color-polish-white:     #E9E8E7;
 }
 
 * {
