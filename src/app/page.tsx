@@ -10,12 +10,30 @@
  */
 
 import PageShell from "@/app/components/PageShell";
-import {
-  getAllStations,
-  getStationsByCity,
-  slugToCity,
-  getPrimaryKrakowStation,
-} from "@/lib/localData";
+
+// ─── Data source toggle ───────────────────────────────────────────────────────
+// When SUPABASE_URL is set, use live Supabase queries.
+// Otherwise fall back to local JSON snapshot (demo mode — no env vars needed).
+const USE_SUPABASE = Boolean(
+  process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL
+);
+
+import * as localData from "@/lib/localData";
+import * as supabaseData from "@/lib/supabaseData";
+
+async function getAllStations() {
+  return USE_SUPABASE ? supabaseData.getAllStations() : localData.getAllStations();
+}
+async function getStationsByCity(slug: string) {
+  return USE_SUPABASE ? supabaseData.getStationsByCity(slug) : localData.getStationsByCity(slug);
+}
+async function slugToCity(slug: string) {
+  return USE_SUPABASE ? supabaseData.slugToCity(slug) : localData.slugToCity(slug);
+}
+async function getPrimaryKrakowStation() {
+  return USE_SUPABASE ? supabaseData.getPrimaryKrakowStation() : localData.getPrimaryKrakowStation();
+}
+
 import { giosLabelToKey, getLevelConfig } from "@/lib/aqi-config";
 import type { StationSummary } from "@/lib/types";
 
@@ -74,18 +92,18 @@ export default async function HomePage({
   const params    = await Promise.resolve(searchParams);
   const cityParam = typeof params.city === "string" ? params.city : null;
 
-  const allStations = getAllStations();
+  const allStations = await getAllStations();
   const national    = computeNationalSummary(allStations);
 
   // City-specific data (empty/null for no selection)
-  const cityStations   = cityParam ? getStationsByCity(cityParam) : [];
-  const cityName       = cityParam ? slugToCity(cityParam) : null;
+  const cityStations   = cityParam ? await getStationsByCity(cityParam) : [];
+  const cityName       = cityParam ? await slugToCity(cityParam) : null;
 
   // Kraków-only: full sensor readings
   let primarySummary = null;
   let primaryReadings = undefined;
   if (cityParam === "krakow" && cityStations.length > 0) {
-    const primary  = getPrimaryKrakowStation();
+    const primary  = await getPrimaryKrakowStation();
     primarySummary = primary.summary ?? null;
     primaryReadings = primary.readings;
   }
