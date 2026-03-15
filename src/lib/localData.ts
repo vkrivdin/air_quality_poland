@@ -18,10 +18,67 @@ export function getAllStations(): StationSummary[] {
   return stationsSummary as StationSummary[];
 }
 
-export function getKrakowStations(): StationSummary[] {
-  return getAllStations().filter(
-    (s) => s.city.toLowerCase().includes("kraków") || s.city.toLowerCase().includes("krakow"),
+// ─── City slug helpers ────────────────────────────────────────────────────────
+
+/**
+ * Converts a city name to a URL-safe slug.
+ * "Kraków" → "krakow", "Bielsko-Biała" → "bielsko-biala"
+ */
+export function cityToSlug(city: string): string {
+  return city
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // strip diacritics
+    .replace(/ł/g, "l")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/**
+ * Given a slug, returns the canonical city name from the station data (or null).
+ * "krakow" → "Kraków"
+ */
+export function slugToCity(slug: string): string | null {
+  const stations = getAllStations();
+  const match = stations.find((s) => cityToSlug(s.city) === slug);
+  return match?.city ?? null;
+}
+
+/**
+ * Returns all stations for a given city slug.
+ * Handles diacritic-normalised matching (e.g. "krakow" matches "Kraków").
+ */
+export function getStationsByCity(slug: string): StationSummary[] {
+  const stations = getAllStations();
+  return stations.filter((s) => cityToSlug(s.city) === slug);
+}
+
+/**
+ * Returns a sorted list of all unique cities with their slugs.
+ * Used to build the local search index.
+ */
+export function getAllCities(): Array<{ city: string; slug: string; voivodeship: string }> {
+  const stations = getAllStations();
+  const seen = new Map<string, { city: string; slug: string; voivodeship: string }>();
+  for (const s of stations) {
+    const slug = cityToSlug(s.city);
+    if (!seen.has(slug)) {
+      seen.set(slug, {
+        city: s.city,
+        slug,
+        voivodeship: s.voivodeship,
+      });
+    }
+  }
+  return Array.from(seen.values()).sort((a, b) =>
+    a.city.localeCompare(b.city, "pl"),
   );
+}
+
+// ─── Kraków-specific ──────────────────────────────────────────────────────────
+
+export function getKrakowStations(): StationSummary[] {
+  return getStationsByCity("krakow");
 }
 
 export function getStationById(id: string): StationSummary | undefined {
