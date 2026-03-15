@@ -1,34 +1,38 @@
+/**
+ * layout.tsx — Root layout for the Powietrze app.
+ * Sets global fonts, metadata, and wraps all pages.
+ */
+
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const inter = Inter({
+  subsets: ["latin", "latin-ext"], // latin-ext covers Polish diacritics
+  variable: "--font-inter",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Powietrze — Air Quality in Poland",
-  description: "Real-time and historical air quality for Poland, focused on Kraków.",
+  title: "Powietrze — Jakość powietrza w Polsce",
+  description:
+    "Interaktywna mapa jakości powietrza w Polsce. Dane z sieci GIOŚ — PM2.5, PM10, NO₂, O₃. Kraków i cała Polska.",
+  keywords: ["jakość powietrza", "smog", "Kraków", "Polska", "PM2.5", "PM10", "AQI", "GIOŚ"],
+  openGraph: {
+    title: "Powietrze — Jakość powietrza w Polsce",
+    description: "Interaktywna mapa jakości powietrza. Dane z sieci GIOŚ.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+    <html lang="pl" className={inter.variable}>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }

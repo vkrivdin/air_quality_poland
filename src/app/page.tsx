@@ -1,37 +1,107 @@
+/**
+ * page.tsx — Home page / Poland map view
+ * Displays an interactive full-screen map of Poland with all GIOŚ stations,
+ * color-coded by current AQI level. Reads from local JSON snapshot — no env vars needed.
+ */
+
 import Link from "next/link";
+import MapWrapper from "@/app/components/MapWrapper";
+import { getAllStations } from "@/lib/localData";
+import { AQI_LEVELS, AQI_FALLBACK } from "@/lib/types";
 
-export default function Home() {
+export default function HomePage() {
+  const stations = getAllStations();
+
+  const levelCounts: Record<string, number> = {};
+  for (const s of stations) {
+    const name = s.aqi.level_name ?? "Brak danych";
+    levelCounts[name] = (levelCounts[name] ?? 0) + 1;
+  }
+
+  const withData = stations.filter((s) => s.aqi.score !== null).length;
+  const noData = stations.length - withData;
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-sky-50 px-4 py-8 font-sans dark:bg-slate-950">
-      <main className="mx-auto flex w-full max-w-3xl flex-col items-center gap-10 rounded-3xl bg-white/80 px-8 py-12 text-center shadow-xl backdrop-blur-sm dark:bg-slate-900/80 sm:px-12 sm:py-16">
-        <div className="inline-flex items-center gap-2 rounded-full bg-sky-100 px-4 py-1 text-xs font-medium uppercase tracking-wide text-sky-800 dark:bg-sky-900/70 dark:text-sky-100">
-          Powietrze
-          <span className="h-1 w-1 rounded-full bg-sky-500" />
-          Kraków · Polska
+    <div className="flex h-screen flex-col bg-[#0a0f1e] text-slate-50">
+      {/* ── Top bar ── */}
+      <header className="flex shrink-0 items-center justify-between border-b border-slate-800 bg-slate-900/80 px-4 py-3 backdrop-blur-sm">
+        <div className="flex items-center gap-3">
+          <svg
+            aria-label="Powietrze logo"
+            viewBox="0 0 32 32"
+            fill="none"
+            className="h-7 w-7"
+          >
+            <circle cx="16" cy="16" r="14" stroke="#38bdf8" strokeWidth="2" />
+            <path
+              d="M8 20 Q12 10 16 16 Q20 22 24 12"
+              stroke="#38bdf8"
+              strokeWidth="2"
+              strokeLinecap="round"
+              fill="none"
+            />
+            <circle cx="16" cy="16" r="3" fill="#38bdf8" opacity="0.5" />
+          </svg>
+          <div>
+            <h1 className="text-sm font-semibold tracking-wide text-white">Powietrze</h1>
+            <p className="text-[10px] text-slate-400">Jakość powietrza w Polsce</p>
+          </div>
         </div>
 
-        <div className="flex flex-col items-center gap-4">
-          <h1 className="text-balance text-4xl font-semibold leading-tight text-slate-900 sm:text-5xl dark:text-slate-50">
-            Jakość powietrza w Polsce,
-            <br className="hidden sm:block" /> ze szczególnym
-            uwzględnieniem Krakowa.
-          </h1>
-          <p className="max-w-xl text-balance text-base leading-relaxed text-slate-600 dark:text-slate-300">
-            Przeglądaj aktualny stan powietrza, ostrzeżenia o smogu oraz
-            historyczne trendy jakości powietrza – wszystko w jednym, prostym
-            panelu.
-          </p>
-        </div>
-
-        <div className="flex flex-col items-center gap-4 sm:flex-row">
-          <Link href="/krakow" className="inline-flex items-center justify-center rounded-full bg-sky-600 px-8 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 dark:ring-offset-slate-900">
-            Przejdź do panelu Kraków
-          </Link>
-          <span className="text-xs text-slate-500 dark:text-slate-400">
-            MVP — dane przykładowe / w trakcie budowy
+        <nav className="flex items-center gap-3">
+          <span className="hidden text-xs text-slate-500 sm:block">
+            {withData} stacji z danymi · {noData} bez danych
           </span>
+          <Link
+            href="/krakow"
+            className="rounded-full bg-sky-600 px-4 py-1.5 text-xs font-semibold text-white transition hover:bg-sky-500"
+          >
+            Panel Kraków →
+          </Link>
+        </nav>
+      </header>
+
+      {/* ── Map ── */}
+      <div className="relative flex-1 overflow-hidden">
+        <MapWrapper stations={stations} className="h-full w-full" />
+
+        {/* Legend */}
+        <div className="absolute top-4 left-16 z-[400] rounded-xl border border-slate-700 bg-slate-900/95 p-3 backdrop-blur-sm">
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+            Indeks jakości powietrza
+          </p>
+          <div className="flex flex-col gap-1.5">
+            {Object.entries(AQI_LEVELS).map(([name, meta]) => (
+              <div key={name} className="flex items-center justify-between gap-6">
+                <div className="flex items-center gap-2">
+                  <span className="h-2.5 w-2.5 rounded-full" style={{ background: meta.color }} />
+                  <span className="text-xs text-slate-300">{name}</span>
+                </div>
+                <span className="text-[10px] text-slate-500">{levelCounts[name] ?? 0}</span>
+              </div>
+            ))}
+            <div className="flex items-center justify-between gap-6">
+              <div className="flex items-center gap-2">
+                <span className="h-2.5 w-2.5 rounded-full" style={{ background: AQI_FALLBACK.color }} />
+                <span className="text-xs text-slate-300">Brak danych</span>
+              </div>
+              <span className="text-[10px] text-slate-500">{noData}</span>
+            </div>
+          </div>
         </div>
-      </main>
+
+        {/* Source badge */}
+        <div className="absolute bottom-4 right-4 z-[400] rounded-xl border border-slate-700 bg-slate-900/95 px-3 py-2 backdrop-blur-sm">
+          <p className="text-[10px] text-slate-400">
+            Źródło:{" "}
+            <a href="https://powietrze.gios.gov.pl" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">
+              GIOŚ
+            </a>{" "}
+            · {new Date().toLocaleDateString("pl", { day: "numeric", month: "long", year: "numeric" })}
+          </p>
+          <p className="mt-0.5 text-[10px] text-slate-500">Kliknij stację, aby zobaczyć szczegóły</p>
+        </div>
+      </div>
     </div>
   );
 }

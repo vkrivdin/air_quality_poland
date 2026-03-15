@@ -1,195 +1,211 @@
-import { KrakowMap } from "./KrakowMap";
+/**
+ * krakow/page.tsx — Kraków air quality dashboard
+ * Shows current AQI, real pollutant readings in µg/m³, all Kraków stations,
+ * and an interactive map. All data from local JSON snapshots (no Supabase needed).
+ */
 
-type KrakowStation = {
-  id: string;
-  name: string;
-  city: string;
-  latitude: number;
-  longitude: number;
+import Link from "next/link";
+import MapWrapper from "@/app/components/MapWrapper";
+import { getKrakowStations, getKrakowReadings, getPrimaryKrakowStation } from "@/lib/localData";
+import { getAqiMeta, AQI_LEVELS } from "@/lib/types";
+
+const POLLUTANT_INFO: Record<string, { label: string; unit: string; badAbove: number }> = {
+  "PM2.5": { label: "PM2.5", unit: "µg/m³", badAbove: 35 },
+  PM10:    { label: "PM10",  unit: "µg/m³", badAbove: 50 },
+  NO2:     { label: "NO₂",   unit: "µg/m³", badAbove: 100 },
+  O3:      { label: "O₃",    unit: "µg/m³", badAbove: 120 },
+  SO2:     { label: "SO₂",   unit: "µg/m³", badAbove: 80 },
+  CO:      { label: "CO",    unit: "µg/m³", badAbove: 10000 },
 };
 
-type KrakowReading = {
-  station_id: string;
-  measured_at: string;
-  pm25: number | null;
-  pm10: number | null;
-  no2: number | null;
-  o3: number | null;
-  so2: number | null;
-  co: number | null;
-  aqi_value: number | null;
-  aqi_level: string | null;
-};
-
-async function loadKrakowStations(): Promise<KrakowStation[]> {
-  const res = await fetch("http://localhost:3000/api/krakow/stations", {
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    return [];
-  }
-
-  const json = (await res.json()) as { stations?: KrakowStation[] };
-  return json.stations ?? [];
+function pollutantColor(param: string, value: number): string {
+  const info = POLLUTANT_INFO[param];
+  if (!info) return "#9ca3af";
+  const ratio = value / info.badAbove;
+  if (ratio <= 0.4) return "#4CAF50";
+  if (ratio <= 0.8) return "#FF9800";
+  return "#F44336";
 }
 
-async function loadKrakowCurrentReading(): Promise<KrakowReading | null> {
-  const res = await fetch("http://localhost:3000/api/krakow/current", {
-    cache: "no-store",
-  });
+export default function KrakowPage() {
+  const krakowStations = getKrakowStations();
+  const readings = getKrakowReadings();
+  const { summary: primary, readings: primaryReadings } = getPrimaryKrakowStation();
 
-  if (!res.ok) {
-    return null;
-  }
+  const aqiMeta = getAqiMeta(primary.aqi.level_name);
+  const calcDate = primary.aqi.calc_date
+    ? new Date(primary.aqi.calc_date).toLocaleString("pl", {
+        day: "numeric", month: "short", hour: "2-digit", minute: "2-digit",
+      })
+    : null;
 
-  const json = (await res.json()) as { status: string; reading?: KrakowReading };
-
-  if (json.status !== "ok" || !json.reading) {
-    return null;
-  }
-
-  return json.reading;
-}
-
-export default async function KrakowDashboardPage() {
-  const [stations, reading] = await Promise.all([
-    loadKrakowStations(),
-    loadKrakowCurrentReading(),
-  ]);
+  const worstScore = Math.max(...krakowStations.map((s) => s.aqi.score ?? 0));
+  const showWarning = worstScore >= 5;
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-8 text-slate-50">
-      <main className="mx-auto flex w-full max-w-5xl flex-col gap-8">
-        <header className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-[0.2em] text-sky-300">
-              Powietrze · Panel miasta
-            </p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-              Kraków — jakość powietrza
-            </h1>
-            <p className="mt-2 text-sm text-slate-300">
-              Widok MVP z danymi przykładowymi. Warstwy mapy, wykresy i
-              połączenie z danymi GIOŚ / Airly pojawią się w kolejnych
-              etapach.
-            </p>
-          </div>
+    <div className="min-h-screen bg-[#0a0f1e] text-slate-50">
+      {/* Warning banner */}
+      {showWarning && (
+        <div className="sticky top-0 z-50 bg-red-900/80 px-4 py-2 backdrop-blur-sm">
+          <p className="text-center text-sm font-medium text-red-100">
+            ⚠️ Ostrzeżenie smogowe — unikaj długiego przebywania na zewnątrz
+          </p>
+        </div>
+      )}
 
-          <div className="flex flex-col items-end gap-2 text-xs text-slate-300">
-            <div className="rounded-full border border-slate-700 bg-slate-900 px-4 py-2">
-              Status:{" "}
-              <span className="font-semibold text-sky-300">
-                {stations.length > 0 ? "połączono z Supabase (stacje GIOŚ)" : "tryb deweloperski (mock)"}
-              </span>
-            </div>
-            {stations.length > 0 && (
-              <p className="text-[11px] text-slate-400">
-                Źródło: {stations.length} stacji w Krakowie zapisanych w Supabase.
-              </p>
-            )}
-          </div>
-        </header>
+      {/* Nav */}
+      <header className="flex items-center justify-between border-b border-slate-800 bg-slate-900/80 px-4 py-3">
+        <div className="flex items-center gap-3">
+          <Link href="/" className="text-sm text-slate-400 hover:text-white transition">
+            ← Mapa Polski
+          </Link>
+          <span className="text-slate-700">·</span>
+          <h1 className="text-sm font-semibold text-white">Kraków — jakość powietrza</h1>
+        </div>
+        <span className="text-xs text-slate-500">Dane: GIOŚ demo</span>
+      </header>
 
-        <section className="grid gap-4 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
-          <article className="rounded-2xl bg-gradient-to-br from-emerald-500 via-sky-500 to-sky-700 p-[1px]">
-            <div className="flex h-full flex-col justify-between rounded-2xl bg-slate-950 px-5 py-4">
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <h2 className="text-sm font-medium text-slate-300">
-                    Aktualny indeks jakości powietrza (AQI)
-                  </h2>
-                  <p className="mt-1 text-xs text-slate-400">
-                    {reading
-                      ? "Dane z Supabase dla jednej stacji w Krakowie."
-                      : "Dane przykładowe — do podpięcia pod pełne dane w kolejnych etapach."}
-                  </p>
-                </div>
-                <span className="rounded-full bg-slate-900/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-emerald-300">
-                  Kraków · {reading ? "Supabase" : "demo"}
-                </span>
-              </div>
+      <main className="mx-auto max-w-5xl px-4 py-6">
+        <div className="flex flex-col gap-6">
 
-              <div className="mt-4 flex items-end justify-between gap-4">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.18em] text-emerald-200">
-                    AQI (PL)
-                  </p>
-                  <p className="mt-1 text-4xl font-semibold leading-none">
-                    {reading?.aqi_value ?? 42}
-                  </p>
-                  <p className="mt-2 text-sm text-emerald-100">
-                    {reading
-                      ? `Poziom: ${reading.aqi_level ?? "unknown"}`
-                      : "Bardzo dobry · możesz spokojnie wyjść na zewnątrz"}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 text-xs text-slate-200">
-                  <div className="rounded-xl bg-slate-900/70 px-3 py-2">
-                    <p className="text-[10px] uppercase tracking-wide text-slate-400">
-                      PM2.5
-                    </p>
-                    <p className="mt-1 text-sm font-semibold">
-                      {reading?.pm25 ?? 12} µg/m³
-                    </p>
-                  </div>
-                  <div className="rounded-xl bg-slate-900/70 px-3 py-2">
-                    <p className="text-[10px] uppercase tracking-wide text-slate-400">
-                      PM10
-                    </p>
-                    <p className="mt-1 text-sm font-semibold">
-                      {reading?.pm10 ?? 22} µg/m³
-                    </p>
-                  </div>
-                  <div className="rounded-xl bg-slate-900/70 px-3 py-2">
-                    <p className="text-[10px] uppercase tracking-wide text-slate-400">
-                      NO₂
-                    </p>
-                    <p className="mt-1 text-sm font-semibold">
-                      {reading?.no2 ?? 18} µg/m³
-                    </p>
-                  </div>
-                  <div className="rounded-xl bg-slate-900/70 px-3 py-2">
-                    <p className="text-[10px] uppercase tracking-wide text-slate-400">
-                      O₃
-                    </p>
-                    <p className="mt-1 text-sm font-semibold">
-                      {reading?.o3 ?? 35} µg/m³
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <article className="flex flex-col gap-4">
-            <div className="flex items-start gap-3 rounded-2xl border border-amber-400/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
-              <span className="mt-[2px] inline-flex h-6 w-6 items-center justify-center rounded-full bg-amber-500/80 text-xs font-semibold">
-                !
-              </span>
+          {/* ── AQI hero + pollutant cards ── */}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {/* AQI hero */}
+            <div
+              className="col-span-2 sm:col-span-1 rounded-2xl p-5 flex flex-col justify-between"
+              style={{
+                background: `linear-gradient(135deg, ${aqiMeta.color}20 0%, ${aqiMeta.color}08 100%)`,
+                border: `1px solid ${aqiMeta.color}44`,
+              }}
+            >
               <div>
-                <p className="font-semibold">Ostrzeżenia o smogu</p>
-                <p className="mt-1 text-amber-100/90">
-                  W tej wersji panelu ostrzeżenia są statyczne. W pełnej wersji
-                  zostaną wyliczone na podstawie bieżącego AQI i progów
-                  bezpieczeństwa.
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+                  Indeks AQI
                 </p>
+                <p className="mt-0.5 text-xs text-slate-500 truncate">{primary.name.replace("Kraków, ", "")}</p>
+              </div>
+              <div className="mt-4">
+                <div className="text-5xl font-bold" style={{ color: aqiMeta.color }}>
+                  {primary.aqi.score ?? "—"}
+                </div>
+                <div className="mt-1 text-xl font-semibold" style={{ color: aqiMeta.color }}>
+                  {aqiMeta.label_pl}
+                </div>
+                <div className="text-xs text-slate-500">{aqiMeta.label_en}</div>
+                {calcDate && (
+                  <p className="mt-3 text-[10px] text-slate-600">Akt.: {calcDate}</p>
+                )}
               </div>
             </div>
 
-            <KrakowMap
-              stations={stations.map((station) => ({
-                id: station.id,
-                name: station.name,
-                latitude: station.latitude,
-                longitude: station.longitude,
-              }))}
-            />
-          </article>
-        </section>
+            {/* Pollutant value cards */}
+            {primaryReadings &&
+              Object.entries(primaryReadings.pollutants)
+                .filter(([, r]) => r !== null && r !== undefined)
+                .map(([param, reading]) => {
+                  if (!reading) return null;
+                  const info = POLLUTANT_INFO[param];
+                  const color = pollutantColor(param, reading.value);
+                  const fillPct = Math.min(100, Math.round((reading.value / (info?.badAbove ?? reading.value)) * 100));
+                  return (
+                    <div
+                      key={param}
+                      className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4"
+                    >
+                      <p className="text-xs font-medium text-slate-400">{info?.label ?? param}</p>
+                      <div className="mt-2 flex items-baseline gap-1">
+                        <span className="text-2xl font-bold" style={{ color }}>{reading.value}</span>
+                        <span className="text-xs text-slate-500">{info?.unit ?? "µg/m³"}</span>
+                      </div>
+                      {/* Thin progress bar */}
+                      <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-slate-800">
+                        <div
+                          className="h-full rounded-full transition-all"
+                          style={{ width: `${fillPct}%`, background: color }}
+                        />
+                      </div>
+                      <p className="mt-1 text-[10px] text-slate-600">
+                        {fillPct}% limitu normy
+                      </p>
+                    </div>
+                  );
+                })}
+          </div>
+
+          {/* ── All Kraków stations ── */}
+          <div>
+            <h2 className="mb-3 text-sm font-semibold text-slate-300">
+              Wszystkie stacje w Krakowie ({krakowStations.length})
+            </h2>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {krakowStations.map((station) => {
+                const meta = getAqiMeta(station.aqi.level_name);
+                const r = readings.find((r) => r.id === station.id);
+                const pm10 = r?.pollutants?.PM10?.value;
+                const pm25 = r?.pollutants?.["PM2.5"]?.value;
+                return (
+                  <div
+                    key={station.id}
+                    className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium text-slate-200">
+                        {station.name.replace(/^Kraków,\s*/i, "")}
+                      </p>
+                      <div className="mt-0.5 flex gap-3 text-xs text-slate-500">
+                        {pm10 != null && <span>PM10: <span className="text-slate-300">{pm10}</span></span>}
+                        {pm25 != null && <span>PM2.5: <span className="text-slate-300">{pm25}</span></span>}
+                        {pm10 == null && pm25 == null && <span>Brak odczytów</span>}
+                      </div>
+                    </div>
+                    <span
+                      className="ml-3 shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold"
+                      style={{ background: `${meta.color}22`, color: meta.color, border: `1px solid ${meta.color}55` }}
+                    >
+                      {meta.label_pl}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* ── Kraków map ── */}
+          <div>
+            <h2 className="mb-3 text-sm font-semibold text-slate-300">Mapa stacji — Kraków</h2>
+            <div className="h-80 overflow-hidden rounded-2xl border border-slate-800">
+              <MapWrapper stations={krakowStations} focusStationId={primary.id} className="h-full w-full" />
+            </div>
+          </div>
+
+          {/* ── AQI scale reference ── */}
+          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
+            <h2 className="mb-3 text-sm font-semibold text-slate-300">Skala indeksu jakości powietrza (PL)</h2>
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(AQI_LEVELS).map(([name, meta]) => (
+                <div
+                  key={name}
+                  className="flex items-center gap-2 rounded-full px-3 py-1"
+                  style={{ background: `${meta.color}18`, border: `1px solid ${meta.color}44` }}
+                >
+                  <span className="h-2 w-2 rounded-full" style={{ background: meta.color }} />
+                  <span className="text-xs" style={{ color: meta.color }}>{name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
       </main>
+
+      <footer className="border-t border-slate-800 px-4 py-4 text-center">
+        <p className="text-xs text-slate-600">
+          Dane: GIOŚ ·{" "}
+          <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-slate-300">
+            Created with Perplexity Computer
+          </a>
+        </p>
+      </footer>
     </div>
   );
 }
-

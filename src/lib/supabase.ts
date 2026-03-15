@@ -1,37 +1,40 @@
 /**
+ * supabase.ts
  * Supabase client helpers for the Powietrze application.
- * Centralises creation of server-side and client-side Supabase instances.
+ * Uses lazy initialization — clients are only created when actually called,
+ * so the build doesn't fail if env vars are not set (demo mode).
  */
-import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-if (!supabaseUrl) {
-  throw new Error("SUPABASE_URL is not set.");
+let _serviceClient: SupabaseClient | null = null;
+let _publicClient: SupabaseClient | null = null;
+
+function getSupabaseUrl(): string {
+  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!url) throw new Error("SUPABASE_URL is not set.");
+  return url;
 }
 
-if (!supabaseServiceRoleKey) {
-  // Service role is required for server-side data fetcher and admin tasks,
-  // but not for public client usage.
-  // We throw here to surface misconfiguration early in development.
-  throw new Error("SUPABASE_SERVICE_ROLE_KEY is not set.");
+export function getServiceClient(): SupabaseClient {
+  if (_serviceClient) return _serviceClient;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!key) throw new Error("SUPABASE_SERVICE_ROLE_KEY is not set.");
+  _serviceClient = createClient(getSupabaseUrl(), key, { auth: { persistSession: false } });
+  return _serviceClient;
 }
 
-if (!supabaseAnonKey) {
-  throw new Error("NEXT_PUBLIC_SUPABASE_ANON_KEY is not set.");
+export function getPublicClient(): SupabaseClient {
+  if (_publicClient) return _publicClient;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!key) throw new Error("NEXT_PUBLIC_SUPABASE_ANON_KEY is not set.");
+  _publicClient = createClient(getSupabaseUrl(), key, { auth: { persistSession: true } });
+  return _publicClient;
 }
 
-export const supabaseServiceClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
-  auth: {
-    persistSession: false,
+// Legacy named export for backward compatibility with existing API routes
+export const supabaseServiceClient = new Proxy({} as SupabaseClient, {
+  get(_, prop) {
+    return getServiceClient()[prop as keyof SupabaseClient];
   },
 });
-
-export const supabasePublicClient = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    persistSession: true,
-  },
-});
-
