@@ -23,6 +23,8 @@ import MapWrapper from "./MapWrapper";
 import CitySearch from "./CitySearch";
 import CityPanel from "./CityPanel";
 import { giosLabelToKey, AQI_LEVEL_CONFIGS, AQI_NO_DATA_CONFIG } from "@/lib/aqi-config";
+import WarningBanner from "./WarningBanner";
+import Footer from "./Footer";
 import type { StationSummary, KrakowStation } from "@/lib/types";
 
 type NationalSummary = {
@@ -198,48 +200,35 @@ export default function PageShell({
         {showCity && (
           <div style={{
             flex: "0 0 40%",
-            overflowY: "auto",
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
             background: "var(--color-background-tertiary)",
             borderLeft: "0.5px solid var(--color-border-tertiary)",
           }}>
-            <CityPanel
-              cityName={cityName ?? cityParam ?? ""}
-              citySlug={cityParam ?? ""}
-              stations={cityStations}
+            {/* WarningBanner: sticky at top of panel; level derived from primary station */}
+            <WarningBanner
+              levelKey={giosLabelToKey(primarySummary?.aqi.level_name)}
               lang={lang}
-              primarySummary={primarySummary ?? undefined}
-              primaryReadings={primaryReadings}
             />
+            <div style={{ flex: 1, overflowY: "auto" }}>
+              <CityPanel
+                cityName={cityName ?? cityParam ?? ""}
+                citySlug={cityParam ?? ""}
+                stations={cityStations}
+                lang={lang}
+                primarySummary={primarySummary ?? undefined}
+                primaryReadings={primaryReadings}
+              />
+            </div>
           </div>
         )}
       </div>
 
       {/* ── Footer ── */}
-      <footer style={{
-        borderTop: "0.5px solid var(--color-border-tertiary)",
-        padding: "8px 16px",
-        background: "var(--color-background-primary)",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexWrap: "wrap",
-        gap: 8,
-        flexShrink: 0,
-      }}>
-        <span style={{ fontSize: 11, color: "var(--color-text-tertiary)" }}>
-          {lang === "pl"
-            ? `Dane: GIOŚ · ${allStations.length} stacji w Polsce`
-            : `Data: GIOŚ · ${allStations.length} stations in Poland`}
-        </span>
-        <a
-          href="https://www.perplexity.ai/computer"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ fontSize: 11, color: "var(--color-text-tertiary)", textDecoration: "none" }}
-        >
-          Created with Perplexity Computer
-        </a>
-      </footer>
+      <div style={{ flexShrink: 0 }}>
+        <Footer lang={lang} />
+      </div>
     </div>
   );
 }
