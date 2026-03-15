@@ -33,12 +33,12 @@ function buildRows(cityName: string): BenchmarkRow[] {
   return [
     {
       source: "gios",
-      label_pl: `${cityName} — średnia roczna PM2.5`,
-      label_en: `${cityName} annual average PM2.5`,
+      label_pl: `${cityName} — średnia roczna PM2.5 (2019–2024)`,
+      label_en: `${cityName} annual average PM2.5 (2019–2024)`,
       value: BENCHMARKS.krakow_annual_pm25,
       valueLabel: `~${BENCHMARKS.krakow_annual_pm25} µg/m³`,
-      desc_pl: "Najwyższe stężenia PM10 spośród 9 głównych miast Polski (2019–2024).",
-      desc_en: "Highest PM10 concentrations among 9 major Polish cities (2019–2024).",
+      desc_pl: "Historyczna średnia roczna wg GIOŚ — nie odczyt bieżący. Najwyższe stężenia PM10 spośród 9 głównych miast Polski.",
+      desc_en: "Historical annual mean per GIOŚ — not a live reading. Highest PM10 concentrations among 9 major Polish cities.",
       color: "#E24B4A",
     },
     {
@@ -127,11 +127,11 @@ export default function ComplianceModal({ isOpen, onClose, lang, cityName }: Pro
           <p style={{ fontSize: 13, lineHeight: 1.65, color: "var(--color-text-secondary)", marginBottom: 16 }}>
             {isKrakow
               ? (lang === "pl"
-                ? "Kraków ma jeden z najgorszych wskaźników jakości powietrza w Polsce. Oto jak obecne stężenia wypadają na tle norm prawnych i zaleceń zdrowotnych."
-                : "Kraków has one of the worst air quality records in Poland. Here is how current concentrations compare against legal limits and health guidelines.")
+                ? "Kraków ma jeden z najgorszych wskaźników jakości powietrza w Polsce. Poniższe wartości to historyczne średnie roczne (2019–2024) wg GIOŚ — nie odczyty bieżące."
+                : "Kraków has one of the worst air quality records in Poland. The values below are historical annual averages (2019–2024) per GIOŚ — not live readings.")
               : (lang === "pl"
-                ? `Oto jak jakość powietrza w ${cityName} wypada na tle norm prawnych i zaleceń zdrowotnych.`
-                : `Here is how air quality in ${cityName} compares against legal limits and health guidelines.`)}
+                ? `Poniższe wartości to historyczne średnie roczne PM2.5 (2019–2024) wg GIOŚ — nie odczyty bieżące ze stacji.`
+                : `The values below are historical annual PM2.5 averages (2019–2024) per GIOŚ — not live station readings.`)}
           </p>
 
           {/* Benchmark bars */}
