@@ -21,7 +21,7 @@ INSERT INTO readings (
   aqi_level
 )
 VALUES
-  ('gios_krk_1', now() - interval '2 hours', 28, 45, 32, 40, 5, 0.8, 72, 'moderate'),
-  ('gios_krk_1', now() - interval '1 hours', 22, 38, 26, 36, 4, 0.7, 64, 'good'),
-  ('gios_krk_1', now(),                     18, 30, 20, 32, 3, 0.6, 55, 'good');
+  ('gios_krk_1', now() - interval '2 hours', 28, 45, 32, 40, 5, 0.8, 72, 'Umiarkowany'),
+  ('gios_krk_1', now() - interval '1 hours', 22, 38, 26, 36, 4, 0.7, 64, 'Dobry'),
+  ('gios_krk_1', now(),                     18, 30, 20, 32, 3, 0.6, 55, 'Dobry');
 
