@@ -79,13 +79,14 @@ export default function PolandMap({ stations, focusStationId }: Props) {
 
       mapRef.current = map;
 
-      // CartoDB Dark Matter — dark basemap, no API key needed
+      // CartoDB Voyager — clean light basemap, Polish labels, no API key needed
+      // Note: the old dark_matter subdomain URL format (*.basemaps.cartocdn.com/dark_matter)
+      // returns 404. The working URL pattern is basemaps.cartocdn.com/rastertiles/<style>.
       L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/dark_matter/{z}/{x}/{y}{r}.png",
+        "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
         {
           attribution:
             '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-          subdomains: "abcd",
           maxZoom: 19,
         },
       ).addTo(map);
@@ -125,14 +126,15 @@ export default function PolandMap({ stations, focusStationId }: Props) {
 
         marker.bindPopup(
           `<div style="min-width:200px;font-family:system-ui,sans-serif;font-size:13px">
-            <div style="font-weight:600;margin-bottom:2px;color:#f0f4ff">${station.name}</div>
-            <div style="font-size:11px;color:#9ca3af;margin-bottom:8px">${station.city} · ${station.voivodeship}</div>
+            <div style="font-weight:600;margin-bottom:2px;color:#1a1a18">${station.name}</div>
+            <div style="font-size:11px;color:#6b6b67;margin-bottom:8px">${station.city} · ${station.voivodeship}</div>
             <div style="display:inline-block;padding:2px 10px;border-radius:9999px;background:${meta.color.bg};border:1px solid ${meta.color.border};color:${meta.color.text};font-weight:600;margin-bottom:8px">
               ${levelDisplay} <span style="opacity:.6;font-weight:400">(${levelEn})</span>
             </div>
-            ${rows ? `<table style="font-size:11px;color:#d1d5db;width:100%">${rows}</table>` : '<p style="font-size:11px;color:#6b7280">Brak danych cząstkowych</p>'}
-            ${timeStr ? `<p style="font-size:10px;color:#6b7280;margin-top:6px">Akt.: ${timeStr}</p>` : ""}
+            ${rows ? `<table style="font-size:11px;color:#444441;width:100%">${rows}</table>` : '<p style="font-size:11px;color:#9b9b97">Brak danych cząstkowych</p>'}
+            ${timeStr ? `<p style="font-size:10px;color:#9b9b97;margin-top:6px">Akt.: ${timeStr}</p>` : ""}
           </div>`,
+
           { maxWidth: 280 },
         );
 
