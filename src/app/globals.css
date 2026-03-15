@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "leaflet/dist/leaflet.css";
+/* Leaflet CSS is loaded dynamically in PolandMap.tsx to avoid PostCSS pipeline issues */
 
 :root {
   --background: #0a0f1e;
