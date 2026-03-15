@@ -1,107 +1,117 @@
 /**
- * page.tsx — Home page / Poland map view
- * Displays an interactive full-screen map of Poland with all GIOŚ stations,
- * color-coded by current AQI level. Reads from local JSON snapshot — no env vars needed.
+ * page.tsx — Home page (Server Component)
+ *
+ * Reads `searchParams.city` from Next.js App Router page props.
+ * Computes national summary (worst / median / best PM2.5 city) from getAllStations().
+ * When city=krakow, also loads Kraków station data and passes it to PageShell.
+ *
+ * This component stays a Server Component so that:
+ *  - searchParams are available synchronously at render time
+ *  - Data fetching happens on the server (no loading flicker for local JSON)
+ *  - PageShell (a Client Component) owns all interactive state (lang, etc.)
  */
 
-import Link from "next/link";
-import MapWrapper from "@/app/components/MapWrapper";
-import { getAllStations } from "@/lib/localData";
-import { AQI_LEVEL_CONFIGS, AQI_NO_DATA_CONFIG } from "@/lib/aqi-config";
+import PageShell from "@/app/components/PageShell";
+import {
+  getAllStations,
+  getKrakowStations,
+  getPrimaryKrakowStation,
+} from "@/lib/localData";
+import { giosLabelToKey, getLevelConfig } from "@/lib/aqi-config";
+import type { StationSummary } from "@/lib/types";
 
-export default function HomePage() {
-  const stations = getAllStations();
+// ─── National summary helpers ────────────────────────────────────────────────
 
-  const levelCounts: Record<string, number> = {};
-  for (const s of stations) {
-    const name = s.aqi.level_name ?? "Brak danych";
-    levelCounts[name] = (levelCounts[name] ?? 0) + 1;
+/** Numeric score for a station — higher is worse. */
+function stationScore(s: StationSummary): number {
+  const key = giosLabelToKey(s.aqi.level_name);
+  const cfg = getLevelConfig(key);
+  return cfg.score; // 0–5
+}
+
+/** Raw PM2.5 value stored on a station record, or 0 as fallback. */
+function stationPm25(s: StationSummary): number {
+  // The station summary doesn't carry a standalone pm25 field, so we infer
+  // from the AQI score's midpoint via getLevelConfig to get a representative value.
+  // Fallback: use score * 10 as a rough approximation when no finer data is available.
+  const key = giosLabelToKey(s.aqi.level_name);
+  if (key === "no_data") return 0;
+  const cfg = getLevelConfig(key);
+  if ("pm25_min" in cfg) {
+    // Return the midpoint of the level's PM2.5 range (Infinity → use pm25_min + 25)
+    const max = cfg.pm25_max === Infinity ? cfg.pm25_min + 25 : cfg.pm25_max;
+    return Math.round((cfg.pm25_min + max) / 2);
+  }
+  return cfg.score * 10;
+}
+
+type NationalSummary = {
+  worst:  { city: string; pm25: number };
+  median: { city: string; pm25: number };
+  best:   { city: string; pm25: number };
+};
+
+function computeNationalSummary(stations: StationSummary[]): NationalSummary | null {
+  // Only include stations that have actual data
+  const withData = stations.filter((s) => giosLabelToKey(s.aqi.level_name) !== "no_data");
+  if (withData.length === 0) return null;
+
+  // Sort by score descending (worst first), then by city name for stability
+  const sorted = [...withData].sort((a, b) => {
+    const scoreDiff = stationScore(b) - stationScore(a);
+    if (scoreDiff !== 0) return scoreDiff;
+    return a.city.localeCompare(b.city, "pl");
+  });
+
+  const worst  = sorted[0];
+  const best   = sorted[sorted.length - 1];
+  const medIdx = Math.floor(sorted.length / 2);
+  const median = sorted[medIdx];
+
+  return {
+    worst:  { city: worst.city,  pm25: stationPm25(worst) },
+    median: { city: median.city, pm25: stationPm25(median) },
+    best:   { city: best.city,   pm25: stationPm25(best) },
+  };
+}
+
+// ─── Page component ──────────────────────────────────────────────────────────
+
+// Next.js 15+ passes searchParams as a Promise; accept both forms for safety.
+type SearchParams = Promise<{ city?: string }> | { city?: string };
+
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  // Resolve searchParams (Next.js 15 requires await; earlier versions pass plain object)
+  const params = await Promise.resolve(searchParams);
+  const cityParam = typeof params.city === "string" ? params.city : null;
+
+  // ── Data ──
+  const allStations = getAllStations();
+  const national    = computeNationalSummary(allStations);
+
+  let krakowStations: StationSummary[] = [];
+  let primarySummary: StationSummary | null = null;
+  let primaryReadings = undefined;
+
+  if (cityParam === "krakow") {
+    krakowStations = getKrakowStations();
+    const primary  = getPrimaryKrakowStation();
+    primarySummary = primary.summary ?? null;
+    primaryReadings = primary.readings;
   }
 
-  const withData = stations.filter((s) => s.aqi.score !== null).length;
-  const noData = stations.length - withData;
-
   return (
-    <div className="flex h-screen flex-col bg-[#0a0f1e] text-slate-50">
-      {/* ── Top bar ── */}
-      <header className="flex shrink-0 items-center justify-between border-b border-slate-800 bg-slate-900/80 px-4 py-3 backdrop-blur-sm">
-        <div className="flex items-center gap-3">
-          <svg
-            aria-label="Powietrze logo"
-            viewBox="0 0 32 32"
-            fill="none"
-            className="h-7 w-7"
-          >
-            <circle cx="16" cy="16" r="14" stroke="#38bdf8" strokeWidth="2" />
-            <path
-              d="M8 20 Q12 10 16 16 Q20 22 24 12"
-              stroke="#38bdf8"
-              strokeWidth="2"
-              strokeLinecap="round"
-              fill="none"
-            />
-            <circle cx="16" cy="16" r="3" fill="#38bdf8" opacity="0.5" />
-          </svg>
-          <div>
-            <h1 className="text-sm font-semibold tracking-wide text-white">Powietrze</h1>
-            <p className="text-[10px] text-slate-400">Jakość powietrza w Polsce</p>
-          </div>
-        </div>
-
-        <nav className="flex items-center gap-3">
-          <span className="hidden text-xs text-slate-500 sm:block">
-            {withData} stacji z danymi · {noData} bez danych
-          </span>
-          <Link
-            href="/krakow"
-            className="rounded-full bg-sky-600 px-4 py-1.5 text-xs font-semibold text-white transition hover:bg-sky-500"
-          >
-            Panel Kraków →
-          </Link>
-        </nav>
-      </header>
-
-      {/* ── Map ── */}
-      <div className="relative flex-1 overflow-hidden">
-        <MapWrapper stations={stations} className="h-full w-full" />
-
-        {/* Legend */}
-        <div className="absolute top-4 left-16 z-[400] rounded-xl border border-slate-700 bg-slate-900/95 p-3 backdrop-blur-sm">
-          <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-slate-400">
-            Indeks jakości powietrza
-          </p>
-          <div className="flex flex-col gap-1.5">
-            {Object.values(AQI_LEVEL_CONFIGS).map((cfg) => (
-              <div key={cfg.key} className="flex items-center justify-between gap-6">
-                <div className="flex items-center gap-2">
-                  <span className="h-2.5 w-2.5 rounded-full" style={{ background: cfg.color.primary }} />
-                  <span className="text-xs text-slate-300">{cfg.label_pl}</span>
-                </div>
-                <span className="text-[10px] text-slate-500">{levelCounts[cfg.label_pl] ?? 0}</span>
-              </div>
-            ))}
-            <div className="flex items-center justify-between gap-6">
-              <div className="flex items-center gap-2">
-                <span className="h-2.5 w-2.5 rounded-full" style={{ background: AQI_NO_DATA_CONFIG.color.primary }} />
-                <span className="text-xs text-slate-300">Brak danych</span>
-              </div>
-              <span className="text-[10px] text-slate-500">{noData}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Source badge */}
-        <div className="absolute bottom-4 right-4 z-[400] rounded-xl border border-slate-700 bg-slate-900/95 px-3 py-2 backdrop-blur-sm">
-          <p className="text-[10px] text-slate-400">
-            Źródło:{" "}
-            <a href="https://powietrze.gios.gov.pl" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">
-              GIOŚ
-            </a>{" "}
-            · {new Date().toLocaleDateString("pl", { day: "numeric", month: "long", year: "numeric" })}
-          </p>
-          <p className="mt-0.5 text-[10px] text-slate-500">Kliknij stację, aby zobaczyć szczegóły</p>
-        </div>
-      </div>
-    </div>
+    <PageShell
+      allStations={allStations}
+      krakowStations={krakowStations}
+      primarySummary={primarySummary}
+      primaryReadings={primaryReadings}
+      national={national}
+      cityParam={cityParam}
+    />
   );
 }
