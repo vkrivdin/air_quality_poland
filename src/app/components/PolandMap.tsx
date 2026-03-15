@@ -65,19 +65,28 @@ export default function PolandMap({ stations, focusStationId }: Props) {
         ? stations.find((s) => s.id === focusStationId)
         : null;
 
-      const initialCenter: [number, number] = focusStation
-        ? [focusStation.lat, focusStation.lon]
-        : [51.9, 19.1];
-      const initialZoom = focusStation ? 12 : 6;
-
+      // Default view: Poland centre. Will be overridden by fitBounds below.
       const map = L.map(containerRef.current!, {
-        center: initialCenter,
-        zoom: initialZoom,
+        center: [51.9, 19.1],
+        zoom: 6,
         zoomControl: true,
         attributionControl: true,
       });
 
       mapRef.current = map;
+
+      // Determine viewport after map is created:
+      // 1. Single focus station → fly to it at city zoom
+      // 2. Small set of stations (city view, ≤50) → fitBounds to frame all of them
+      // 3. Full national view (>50 stations) → leave at Poland default
+      if (focusStation) {
+        map.setView([focusStation.lat, focusStation.lon], 12);
+      } else if (stations.length > 0 && stations.length <= 50) {
+        const bounds = L.latLngBounds(
+          stations.map((s) => [s.lat, s.lon] as [number, number])
+        );
+        map.fitBounds(bounds, { padding: [48, 48], maxZoom: 13 });
+      }
 
       // CartoDB Voyager — clean light basemap, Polish labels, no API key needed
       // Note: the old dark_matter subdomain URL format (*.basemaps.cartocdn.com/dark_matter)
