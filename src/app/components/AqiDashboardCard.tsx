@@ -18,6 +18,7 @@ type Props = {
   pm10: number | null;
   no2: number | null;
   stationName: string;
+  cityName: string;         // canonical display name, e.g. "Kraków", "Warszawa"
   updatedAt: string;        // ISO string — formatted inside the component
   lang: Lang;
   percentile?: number | null;   // % of days this year with worse air; null if < GOOD_DAY_MIN_DAYS days
@@ -35,7 +36,7 @@ function formatUpdated(iso: string, lang: Lang): string {
 }
 
 export default function AqiDashboardCard({
-  levelKey, pm25, pm10, no2, stationName, updatedAt, lang,
+  levelKey, pm25, pm10, no2, stationName, cityName, updatedAt, lang,
   percentile = null, dataPointCount = 0,
 }: Props) {
   const cfg = getLevelConfig(levelKey);
@@ -148,7 +149,7 @@ export default function AqiDashboardCard({
           <span style={{ fontSize: 11, color: "var(--color-text-secondary)" }}>
             {stationName} · {formatUpdated(updatedAt, lang)}
           </span>
-          <ComplianceBadge lang={lang} />
+          <ComplianceBadge lang={lang} cityName={cityName} />
         </div>
       </div>
     </div>

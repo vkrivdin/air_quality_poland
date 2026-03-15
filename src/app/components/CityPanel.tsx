@@ -221,6 +221,7 @@ export default function CityPanel({
               pm10={pm10Val}
               no2={no2Val}
               stationName={primarySummary.name}
+              cityName={cityName}
               updatedAt={updatedAt}
               lang={lang}
             />

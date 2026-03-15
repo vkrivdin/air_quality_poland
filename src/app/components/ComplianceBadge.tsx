@@ -10,7 +10,7 @@ import { getComplianceBadge } from "@/lib/aqi-config";
 import ComplianceModal from "./ComplianceModal";
 import type { Lang } from "./LanguageSwitcher";
 
-type Props = { lang: Lang; };
+type Props = { lang: Lang; cityName: string; };
 
 const SEVERITY_STYLES = {
   green: { bg: "#EAF3DE", border: "#3B6D11", color: "#27500A" },
@@ -18,7 +18,7 @@ const SEVERITY_STYLES = {
   red:   { bg: "#FCEBEB", border: "#A32D2D", color: "#791F1F" },
 };
 
-export default function ComplianceBadge({ lang }: Props) {
+export default function ComplianceBadge({ lang, cityName }: Props) {
   const [open, setOpen] = useState(false);
   const badge = getComplianceBadge();
   const s = SEVERITY_STYLES[badge.severity];
@@ -44,7 +44,7 @@ export default function ComplianceBadge({ lang }: Props) {
         </svg>
         {lang === "pl" ? badge.text_pl : badge.text_en}
       </button>
-      <ComplianceModal isOpen={open} onClose={() => setOpen(false)} lang={lang} />
+      <ComplianceModal isOpen={open} onClose={() => setOpen(false)} lang={lang} cityName={cityName} />
     </>
   );
 }
