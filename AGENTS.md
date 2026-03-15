@@ -53,4 +53,29 @@ Do not guess — stop and ask.
 
 Principles promoted from BUGS.md after proving their worth. Each starts with the BUG-N reference.
 
-*(none yet — first promoted rule goes here)*
+### Leaflet tile URLs (BUG-1)
+Before writing any Leaflet `tileLayer` URL, verify it returns HTTP 200:
+```bash
+curl -s -o /dev/null -w "%{http_code}" "<tile_url_with_real_z_x_y>"
+```
+Use the working CartoDB format — no subdomains:
+```
+https://basemaps.cartocdn.com/rastertiles/<style>/{z}/{x}/{y}{r}.png
+```
+Valid styles: `voyager` (light, recommended), `light_all`, `dark_matter_all`.
+The old subdomain format `https://{s}.basemaps.cartocdn.com/dark_matter/...` returns 404 — never use it.
+
+### Leaflet z-index clearance (BUG-2)
+Any `position: fixed` overlay (modal, drawer, toast, tooltip) on a page that contains a Leaflet map must use `zIndex` ≥ 2000.
+Leaflet's internal layers: tile pane = 200, marker pane = 400, popup pane = 600.
+A backdrop at z-index 100 will be covered by map tiles. 2000 is the minimum safe value.
+
+### fitBounds for city views (BUG-3)
+When `PolandMap` receives a filtered city station set (≤ 50 stations, no `focusStationId`), always use:
+```ts
+map.fitBounds(
+  L.latLngBounds(stations.map(s => [s.lat, s.lon] as [number, number])),
+  { padding: [48, 48], maxZoom: 13 }
+);
+```
+Never fall back to a fixed centre point for a multi-station city view — the stations may be spread across the city and a fixed centre will be wrong.
