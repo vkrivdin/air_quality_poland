@@ -86,7 +86,7 @@ export default function ComplianceModal({ isOpen, onClose, lang }: Props) {
     <div
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
       style={{
-        position: "fixed", inset: 0, zIndex: 100,
+        position: "fixed", inset: 0, zIndex: 2000,
         background: "rgba(0,0,0,0.45)",
         display: "flex", alignItems: "center", justifyContent: "center",
         padding: 16,
