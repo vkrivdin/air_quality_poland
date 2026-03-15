@@ -166,16 +166,31 @@ export async function slugToCity(slug: string): Promise<string | null> {
   return data[0].city;
 }
 
+/**
+ * Returns 24h of readings for any city slug, shaped as KrakowStation[].
+ * Used by getPrimaryStation() for all cities.
+ */
+export async function getReadingsForCity(slug: string): Promise<KrakowStation[]> {
+  // Resolve slug to canonical city name first
+  const cityName = await slugToCity(slug);
+  if (!cityName) return [];
+  return getReadingsByCityName(cityName);
+}
+
 export async function getKrakowReadings(): Promise<KrakowStation[]> {
+  return getReadingsByCityName("Kraków");
+}
+
+async function getReadingsByCityName(cityName: string): Promise<KrakowStation[]> {
   const db = getServiceClient();
 
-  // Get all Kraków station IDs
+  // Get station IDs for the requested city
   const { data: stations, error: sErr } = await db
     .from("stations")
-    .select("id, name")
-    .eq("city", "Kraków")
+    .select("id, name, latitude, longitude")
+    .eq("city", cityName)
     .eq("is_active", true)
-    .returns<{ id: string; name: string }[]>();
+    .returns<{ id: string; name: string; latitude: number; longitude: number }[]>();
 
   if (sErr || !stations || stations.length === 0) return [];
 
@@ -194,11 +209,11 @@ export async function getKrakowReadings(): Promise<KrakowStation[]> {
   if (rErr || !readings) return [];
 
   // Build a station lookup for lat/lon
-  const stationMeta = new Map<string, StationRow>();
-  for (const s of stations) stationMeta.set(s.id, s as unknown as StationRow);
+  const stationMeta = new Map<string, { latitude: number; longitude: number }>();
+  for (const s of stations) stationMeta.set(s.id, { latitude: s.latitude, longitude: s.longitude });
 
   // Group readings by station → KrakowStation shape
-  return (stations as { id: string; name: string }[]).map((s): KrakowStation => {
+  return stations.map((s): KrakowStation => {
     const meta = stationMeta.get(s.id);
     const stationReadings = readings.filter((r) => r.station_id === s.id);
     const latest = stationReadings.at(-1);
@@ -229,7 +244,7 @@ export async function getKrakowReadings(): Promise<KrakowStation[]> {
       id: s.id,
       gios_id: parseInt(s.id.replace("gios_", ""), 10) || 0,
       name: s.name,
-      city: "Kraków",
+      city: cityName,
       lat: meta?.latitude ?? 50.06,
       lon: meta?.longitude ?? 19.94,
       pollutants,
@@ -238,18 +253,24 @@ export async function getKrakowReadings(): Promise<KrakowStation[]> {
   });
 }
 
-export async function getPrimaryKrakowStation(): Promise<{
+/**
+ * Returns the best-data station for any city slug.
+ * "Best" = station with the most pollutant readings in the last 24 h.
+ * Falls back to the first station alphabetically if no readings exist.
+ * Works for any city — not just Kraków.
+ */
+export async function getPrimaryStation(slug: string): Promise<{
   summary: StationSummary | null;
   readings: KrakowStation | undefined;
 }> {
   const [summaries, readings] = await Promise.all([
-    getStationsByCity("krakow"),
-    getKrakowReadings(),
+    getStationsByCity(slug),
+    getReadingsForCity(slug),
   ]);
 
   if (summaries.length === 0) return { summary: null, readings: undefined };
 
-  // Pick station with most pollutant data
+  // Pick station with most pollutant data in recent readings
   let bestSummary = summaries[0];
   let bestReadings: KrakowStation | undefined;
   let bestCount = 0;
@@ -266,5 +287,20 @@ export async function getPrimaryKrakowStation(): Promise<{
     }
   }
 
+  // If no readings found, pick the station with the best AQI score
+  if (!bestReadings) {
+    const withScore = summaries.filter((s) => s.aqi.score !== null);
+    if (withScore.length > 0) {
+      bestSummary = withScore.reduce((a, b) =>
+        (a.aqi.score ?? 99) < (b.aqi.score ?? 99) ? a : b
+      );
+    }
+  }
+
   return { summary: bestSummary, readings: bestReadings };
+}
+
+/** Alias for backward compatibility */
+export async function getPrimaryKrakowStation() {
+  return getPrimaryStation("krakow");
 }

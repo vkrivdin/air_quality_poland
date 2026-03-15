@@ -212,8 +212,8 @@ export default function CityPanel({
       {/* ── Scrollable content ── */}
       <div style={{ flex: 1, overflowY: "auto", padding: 16 }}>
 
-        {/* Kraków: full AqiDashboardCard with hourly data */}
-        {isKrakow && primarySummary && (
+        {/* Full AqiDashboardCard — shown for any city that has a primary station */}
+        {primarySummary && (
           <div style={{ marginBottom: 16 }}>
             <AqiDashboardCard
               levelKey={krakowLevelKey}
@@ -229,13 +229,13 @@ export default function CityPanel({
 
         {/* ── Station list ── */}
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {/* Non-Kraków: lightweight summary card derived from StationSummary[] */}
-          {!isKrakow && (
+          {/* Fallback summary card — only when no primarySummary (demo/no-data mode) */}
+          {!primarySummary && (
             <CitySummaryCard stations={stations} lang={lang} />
           )}
 
-          {/* For Kraków, show "Other stations" header when there's more than 1 */}
-          {isKrakow && stations.length > 1 && (
+          {/* "Other stations" header when there are multiple stations */}
+          {primarySummary && stations.length > 1 && (
             <div style={{
               fontSize: 10, fontWeight: 600,
               textTransform: "uppercase", letterSpacing: "0.08em",
@@ -247,8 +247,8 @@ export default function CityPanel({
           )}
 
           {stations.map((s) => {
-            // For Kraków, skip the primary station (it's already shown in the card above)
-            if (isKrakow && primarySummary && s.id === primarySummary.id) return null;
+            // Skip the primary station from the list — it's already shown in the card above
+            if (primarySummary && s.id === primarySummary.id) return null;
 
             const levelKey = giosLabelToKey(s.aqi.level_name);
             const pollutants = [

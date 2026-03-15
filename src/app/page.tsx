@@ -33,6 +33,9 @@ async function slugToCity(slug: string) {
 async function getPrimaryKrakowStation() {
   return USE_SUPABASE ? supabaseData.getPrimaryKrakowStation() : localData.getPrimaryKrakowStation();
 }
+async function getPrimaryStation(slug: string) {
+  return USE_SUPABASE ? supabaseData.getPrimaryStation(slug) : localData.getPrimaryKrakowStation();
+}
 
 import { giosLabelToKey, getLevelConfig } from "@/lib/aqi-config";
 import type { StationSummary } from "@/lib/types";
@@ -99,11 +102,11 @@ export default async function HomePage({
   const cityStations   = cityParam ? await getStationsByCity(cityParam) : [];
   const cityName       = cityParam ? await slugToCity(cityParam) : null;
 
-  // Kraków-only: full sensor readings
+  // Primary station for selected city — works for any city with Supabase data
   let primarySummary = null;
   let primaryReadings = undefined;
-  if (cityParam === "krakow" && cityStations.length > 0) {
-    const primary  = await getPrimaryKrakowStation();
+  if (cityParam && cityStations.length > 0) {
+    const primary = await getPrimaryStation(cityParam);
     primarySummary = primary.summary ?? null;
     primaryReadings = primary.readings;
   }
