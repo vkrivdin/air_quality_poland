@@ -41,7 +41,9 @@ function loadEnv(): void {
       const eqIdx = trimmed.indexOf("=");
       if (eqIdx === -1) continue;
       const key = trimmed.slice(0, eqIdx).trim();
-      const val = trimmed.slice(eqIdx + 1).trim();
+      const raw = trimmed.slice(eqIdx + 1).trim();
+      // Strip surrounding single or double quotes (e.g. KEY="value" or KEY='value')
+      const val = raw.replace(/^(['"])(.*)\1$/, "$2");
       if (!process.env[key]) process.env[key] = val;
     }
   } catch {
