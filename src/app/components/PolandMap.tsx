@@ -15,7 +15,7 @@
 
 import { useEffect, useRef } from "react";
 import type { StationSummary } from "@/lib/types";
-import { getAqiMeta } from "@/lib/types";
+import { giosLabelToKey, getLevelConfig } from "@/lib/aqi-config";
 
 type Props = {
   stations: StationSummary[];
@@ -92,12 +92,12 @@ export default function PolandMap({ stations, focusStationId }: Props) {
 
       // AQI circle markers
       stations.forEach((station) => {
-        const meta = getAqiMeta(station.aqi.level_name);
+        const meta = getLevelConfig(giosLabelToKey(station.aqi.level_name));
         const hasData = station.aqi.score !== null;
 
         const marker = L.circleMarker([station.lat, station.lon], {
           radius: hasData ? 8 : 5,
-          fillColor: meta.color,
+          fillColor: meta.color.primary,
           color: hasData ? "rgba(255,255,255,0.25)" : "transparent",
           weight: 1,
           opacity: 1,
@@ -127,7 +127,7 @@ export default function PolandMap({ stations, focusStationId }: Props) {
           `<div style="min-width:200px;font-family:system-ui,sans-serif;font-size:13px">
             <div style="font-weight:600;margin-bottom:2px;color:#f0f4ff">${station.name}</div>
             <div style="font-size:11px;color:#9ca3af;margin-bottom:8px">${station.city} · ${station.voivodeship}</div>
-            <div style="display:inline-block;padding:2px 10px;border-radius:9999px;background:${meta.color}22;border:1px solid ${meta.color}88;color:${meta.color};font-weight:600;margin-bottom:8px">
+            <div style="display:inline-block;padding:2px 10px;border-radius:9999px;background:${meta.color.bg};border:1px solid ${meta.color.border};color:${meta.color.text};font-weight:600;margin-bottom:8px">
               ${levelDisplay} <span style="opacity:.6;font-weight:400">(${levelEn})</span>
             </div>
             ${rows ? `<table style="font-size:11px;color:#d1d5db;width:100%">${rows}</table>` : '<p style="font-size:11px;color:#6b7280">Brak danych cząstkowych</p>'}

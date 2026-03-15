@@ -7,7 +7,7 @@
 import Link from "next/link";
 import MapWrapper from "@/app/components/MapWrapper";
 import { getAllStations } from "@/lib/localData";
-import { AQI_LEVELS, AQI_FALLBACK } from "@/lib/types";
+import { AQI_LEVEL_CONFIGS, AQI_NO_DATA_CONFIG } from "@/lib/aqi-config";
 
 export default function HomePage() {
   const stations = getAllStations();
@@ -71,18 +71,18 @@ export default function HomePage() {
             Indeks jakości powietrza
           </p>
           <div className="flex flex-col gap-1.5">
-            {Object.entries(AQI_LEVELS).map(([name, meta]) => (
-              <div key={name} className="flex items-center justify-between gap-6">
+            {Object.values(AQI_LEVEL_CONFIGS).map((cfg) => (
+              <div key={cfg.key} className="flex items-center justify-between gap-6">
                 <div className="flex items-center gap-2">
-                  <span className="h-2.5 w-2.5 rounded-full" style={{ background: meta.color }} />
-                  <span className="text-xs text-slate-300">{name}</span>
+                  <span className="h-2.5 w-2.5 rounded-full" style={{ background: cfg.color.primary }} />
+                  <span className="text-xs text-slate-300">{cfg.label_pl}</span>
                 </div>
-                <span className="text-[10px] text-slate-500">{levelCounts[name] ?? 0}</span>
+                <span className="text-[10px] text-slate-500">{levelCounts[cfg.label_pl] ?? 0}</span>
               </div>
             ))}
             <div className="flex items-center justify-between gap-6">
               <div className="flex items-center gap-2">
-                <span className="h-2.5 w-2.5 rounded-full" style={{ background: AQI_FALLBACK.color }} />
+                <span className="h-2.5 w-2.5 rounded-full" style={{ background: AQI_NO_DATA_CONFIG.color.primary }} />
                 <span className="text-xs text-slate-300">Brak danych</span>
               </div>
               <span className="text-[10px] text-slate-500">{noData}</span>

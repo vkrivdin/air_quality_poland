@@ -7,7 +7,7 @@
 import Link from "next/link";
 import MapWrapper from "@/app/components/MapWrapper";
 import { getKrakowStations, getKrakowReadings, getPrimaryKrakowStation } from "@/lib/localData";
-import { getAqiMeta, AQI_LEVELS } from "@/lib/types";
+import { giosLabelToKey, getLevelConfig, AQI_LEVEL_CONFIGS } from "@/lib/aqi-config";
 
 const POLLUTANT_INFO: Record<string, { label: string; unit: string; badAbove: number }> = {
   "PM2.5": { label: "PM2.5", unit: "µg/m³", badAbove: 35 },
@@ -32,7 +32,7 @@ export default function KrakowPage() {
   const readings = getKrakowReadings();
   const { summary: primary, readings: primaryReadings } = getPrimaryKrakowStation();
 
-  const aqiMeta = getAqiMeta(primary.aqi.level_name);
+  const aqiMeta = getLevelConfig(giosLabelToKey(primary.aqi.level_name));
   const calcDate = primary.aqi.calc_date
     ? new Date(primary.aqi.calc_date).toLocaleString("pl", {
         day: "numeric", month: "short", hour: "2-digit", minute: "2-digit",
@@ -74,8 +74,8 @@ export default function KrakowPage() {
             <div
               className="col-span-2 sm:col-span-1 rounded-2xl p-5 flex flex-col justify-between"
               style={{
-                background: `linear-gradient(135deg, ${aqiMeta.color}20 0%, ${aqiMeta.color}08 100%)`,
-                border: `1px solid ${aqiMeta.color}44`,
+                background: `linear-gradient(135deg, ${aqiMeta.color.bg} 0%, ${aqiMeta.color.bg} 100%)`,
+                border: `1px solid ${aqiMeta.color.border}`,
               }}
             >
               <div>
@@ -85,13 +85,13 @@ export default function KrakowPage() {
                 <p className="mt-0.5 text-xs text-slate-500 truncate">{primary.name.replace("Kraków, ", "")}</p>
               </div>
               <div className="mt-4">
-                <div className="text-5xl font-bold" style={{ color: aqiMeta.color }}>
+                <div className="text-5xl font-bold" style={{ color: aqiMeta.color.primary }}>
                   {primary.aqi.score ?? "—"}
                 </div>
-                <div className="mt-1 text-xl font-semibold" style={{ color: aqiMeta.color }}>
+                <div className="mt-1 text-xl font-semibold" style={{ color: aqiMeta.color.primary }}>
                   {aqiMeta.label_pl}
                 </div>
-                <div className="text-xs text-slate-500">{aqiMeta.label_en}</div>
+                <div className="text-xs text-slate-500">{"label_en" in aqiMeta ? aqiMeta.label_en : ""}</div>
                 {calcDate && (
                   <p className="mt-3 text-[10px] text-slate-600">Akt.: {calcDate}</p>
                 )}
@@ -139,7 +139,7 @@ export default function KrakowPage() {
             </h2>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {krakowStations.map((station) => {
-                const meta = getAqiMeta(station.aqi.level_name);
+                const meta = getLevelConfig(giosLabelToKey(station.aqi.level_name));
                 const r = readings.find((r) => r.id === station.id);
                 const pm10 = r?.pollutants?.PM10?.value;
                 const pm25 = r?.pollutants?.["PM2.5"]?.value;
@@ -160,7 +160,7 @@ export default function KrakowPage() {
                     </div>
                     <span
                       className="ml-3 shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold"
-                      style={{ background: `${meta.color}22`, color: meta.color, border: `1px solid ${meta.color}55` }}
+                      style={{ background: meta.color.bg, color: meta.color.text, border: `1px solid ${meta.color.border}` }}
                     >
                       {meta.label_pl}
                     </span>
@@ -182,14 +182,14 @@ export default function KrakowPage() {
           <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
             <h2 className="mb-3 text-sm font-semibold text-slate-300">Skala indeksu jakości powietrza (PL)</h2>
             <div className="flex flex-wrap gap-2">
-              {Object.entries(AQI_LEVELS).map(([name, meta]) => (
+              {Object.values(AQI_LEVEL_CONFIGS).map((cfg) => (
                 <div
-                  key={name}
+                  key={cfg.key}
                   className="flex items-center gap-2 rounded-full px-3 py-1"
-                  style={{ background: `${meta.color}18`, border: `1px solid ${meta.color}44` }}
+                  style={{ background: cfg.color.bg, border: `1px solid ${cfg.color.border}` }}
                 >
-                  <span className="h-2 w-2 rounded-full" style={{ background: meta.color }} />
-                  <span className="text-xs" style={{ color: meta.color }}>{name}</span>
+                  <span className="h-2 w-2 rounded-full" style={{ background: cfg.color.primary }} />
+                  <span className="text-xs" style={{ color: cfg.color.text }}>{cfg.label_pl}</span>
                 </div>
               ))}
             </div>
