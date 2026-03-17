@@ -5,16 +5,18 @@ harvest-sensors.py
 Fetches sensor metadata for every station in local.db.
 Uses the GIOŚ /station/sensors/{id} endpoint — rate-limited to ~2 req/min.
 
-RESUMABLE: Tracks which stations have been done by checking for existing sensor
-rows. Re-run safely — only fetches stations with no sensors yet.
+RESUMABLE: Only fetches stations that have no sensor rows yet.
+Re-run safely — already-fetched stations are skipped.
 
 Usage:
   python3 scripts/harvest-sensors.py             # fetch all remaining stations
   python3 scripts/harvest-sensors.py --limit 50  # fetch at most 50 stations
   python3 scripts/harvest-sensors.py --city Kraków  # only stations in one city
 
-Rate: 1 request per 31 seconds = safe under the 2/min limit.
+Rate: 1 request per 31 seconds — safe under the 2/min GIOŚ limit.
 Full national run (~289 stations): ~2.5 hours.
+
+Progress is logged to data/harvest.log — follow with: tail -f data/harvest.log
 """
 import json
 import time
@@ -26,7 +28,19 @@ import argparse
 
 BASE_URL  = "https://api.gios.gov.pl/pjp-api/v1/rest"
 DB_PATH   = os.path.join(os.path.dirname(__file__), "../data/local.db")
-DELAY_SEC = 31   # seconds between requests — stays safely under 2 req/min
+LOG_PATH  = os.path.join(os.path.dirname(__file__), "../data/harvest.log")
+DELAY_SEC = 31
+
+
+def now_iso() -> str:
+    return datetime.datetime.now(datetime.UTC).isoformat(timespec="seconds")
+
+
+def log(msg: str) -> None:
+    line = f"[{now_iso()}] {msg}"
+    print(line, flush=True)
+    with open(LOG_PATH, "a", encoding="utf-8") as f:
+        f.write(line + "\n")
 
 
 def fetch(url: str):
@@ -38,21 +52,21 @@ def fetch(url: str):
         with urllib.request.urlopen(req, timeout=20) as r:
             return json.loads(r.read())
     except Exception as e:
-        print(f"  ERROR fetching {url}: {e}")
+        log(f"  ERROR fetching {url}: {e}")
         return None
 
 
 def main() -> None:
+    os.makedirs(os.path.dirname(LOG_PATH), exist_ok=True)
     parser = argparse.ArgumentParser()
     parser.add_argument("--limit", type=int, default=None)
-    parser.add_argument("--city", type=str, default=None)
+    parser.add_argument("--city",  type=str, default=None)
     args = parser.parse_args()
 
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")
 
-    # Find stations that have NO sensors yet
     base_query = """
         SELECT s.id, s.gios_id, s.name, s.city
         FROM stations s
@@ -67,29 +81,29 @@ def main() -> None:
     base_query += " ORDER BY s.city, s.name"
 
     todo = conn.execute(base_query, params).fetchall()
-
     if args.limit:
         todo = todo[:args.limit]
 
-    print(f"\n  {len(todo)} stations still need sensor metadata.")
+    log(f"[harvest-sensors] START — {len(todo)} stations to process" +
+        (f" (city={args.city})" if args.city else ""))
+
     if not todo:
-        print("  Nothing to do — all stations already have sensor data.")
+        log("  Nothing to do — all stations already have sensor data.")
         return
 
-    started = datetime.datetime.utcnow().isoformat()
+    started = now_iso()
     inserted_total = 0
     errors = 0
 
     for i, station in enumerate(todo):
         gios_id    = station["gios_id"]
         station_id = station["id"]
-        print(f"  [{i+1}/{len(todo)}] {station['city']} — {station['name']} (gios_id={gios_id})")
+        log(f"  [{i+1}/{len(todo)}] {station['city']} — {station['name']} (gios_id={gios_id})")
 
         data = fetch(f"{BASE_URL}/station/sensors/{gios_id}")
         if not data:
             errors += 1
         else:
-            # Response key varies between API versions
             sensors = (
                 data if isinstance(data, list)
                 else data.get("Lista stanowisk pomiarowych dla podanej stacji")
@@ -97,7 +111,6 @@ def main() -> None:
             )
             inserted = 0
             for sensor in sensors:
-                # Field names vary: flat dict or nested param object
                 param = sensor.get("wskaźnik") or sensor.get("param") or {}
                 sensor_id = (
                     sensor.get("Identyfikator stanowiska")
@@ -114,11 +127,8 @@ def main() -> None:
                     or param.get("paramCode")
                     or sensor.get("kodWskaznika", "")
                 )
-                param_id = (
-                    sensor.get("Id wskaźnika")
-                    or param.get("idParam")
-                )
-                formula = (
+                param_id = sensor.get("Id wskaźnika") or param.get("idParam")
+                formula  = (
                     sensor.get("Wskaźnik - wzór")
                     or param.get("paramFormula")
                     or sensor.get("wzorWskaznika")
@@ -130,38 +140,26 @@ def main() -> None:
                         INSERT OR IGNORE INTO sensors
                           (id, station_id, param_name, param_code, param_id, formula)
                         VALUES (?,?,?,?,?,?)
-                    """, (
-                        sensor_id,
-                        station_id,
-                        param_name,
-                        param_code,
-                        param_id,
-                        formula,
-                    ))
+                    """, (sensor_id, station_id, param_name, param_code, param_id, formula))
                     inserted += conn.execute("SELECT changes()").fetchone()[0]
                 except Exception as e:
-                    print(f"    ⚠ insert error: {e}")
+                    log(f"    ⚠ insert error: {e}")
             conn.commit()
             inserted_total += inserted
-            print(f"    → {inserted} sensors added")
+            log(f"    → {inserted} sensors added (total so far: {inserted_total})")
 
         if i < len(todo) - 1:
             time.sleep(DELAY_SEC)
 
-    # Log
     conn.execute("""
         INSERT INTO harvest_log
           (script, phase, stations_processed, readings_inserted, errors_count, started_at, finished_at)
         VALUES (?,?,?,?,?,?,?)
-    """, ("harvest-sensors.py", "sensors", len(todo), inserted_total, errors,
-          started, datetime.datetime.utcnow().isoformat()))
+    """, ("harvest-sensors.py", "sensors", len(todo), inserted_total, errors, started, now_iso()))
     conn.commit()
     conn.close()
 
-    print(f"\n── Done ──")
-    print(f"  Stations processed: {len(todo)}")
-    print(f"  Sensors inserted:   {inserted_total}")
-    print(f"  Errors:             {errors}")
+    log(f"[harvest-sensors] DONE — stations={len(todo)} sensors={inserted_total} errors={errors}")
 
 
 if __name__ == "__main__":

@@ -10,7 +10,9 @@ the last --min-age minutes (default 30).
 
 Usage:
   python3 scripts/harvest-aqi-snapshot.py
-  python3 scripts/harvest-aqi-snapshot.py --min-age 60  # skip if updated < 60 min ago
+  python3 scripts/harvest-aqi-snapshot.py --min-age 60
+
+Progress is logged to data/harvest.log — follow with: tail -f data/harvest.log
 """
 import json
 import time
@@ -22,7 +24,33 @@ import argparse
 
 BASE_URL  = "https://api.gios.gov.pl/pjp-api/v1/rest"
 DB_PATH   = os.path.join(os.path.dirname(__file__), "../data/local.db")
-DELAY_SEC = 0.12  # 120ms between requests — well within 1500 req/min
+LOG_PATH  = os.path.join(os.path.dirname(__file__), "../data/harvest.log")
+DELAY_SEC = 0.12  # 120ms — well within 1500 req/min
+
+
+def now_iso() -> str:
+    return datetime.datetime.now(datetime.UTC).isoformat(timespec="seconds")
+
+
+def log(msg: str) -> None:
+    line = f"[{now_iso()}] {msg}"
+    print(line, flush=True)
+    with open(LOG_PATH, "a", encoding="utf-8") as f:
+        f.write(line + "\n")
+
+
+def normalise_level(raw: str | None) -> str | None:
+    if not raw:
+        return None
+    MAP = {
+        "bardzo dobry": "bardzo_dobry",
+        "dobry":        "dobry",
+        "umiarkowany":  "umiarkowany",
+        "dostateczny":  "umiarkowany",
+        "zły":          "zly",
+        "bardzo zły":   "bardzo_zly",
+    }
+    return MAP.get(raw.strip().lower(), raw.lower().replace(" ", "_"))
 
 
 def fetch(url: str):
@@ -37,22 +65,8 @@ def fetch(url: str):
         return None
 
 
-def normalise_level(raw: str | None) -> str | None:
-    """Map GIOŚ category names to internal level keys."""
-    if not raw:
-        return None
-    MAP = {
-        "bardzo dobry": "bardzo_dobry",
-        "dobry":        "dobry",
-        "umiarkowany":  "umiarkowany",
-        "dostateczny":  "umiarkowany",  # older GIOŚ label, same band
-        "zły":          "zly",
-        "bardzo zły":   "bardzo_zly",
-    }
-    return MAP.get(raw.strip().lower(), raw.lower().replace(" ", "_"))
-
-
 def main() -> None:
+    os.makedirs(os.path.dirname(LOG_PATH), exist_ok=True)
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--min-age", type=int, default=30,
@@ -71,9 +85,9 @@ def main() -> None:
         ORDER BY city, name
     """).fetchall()
 
-    print(f"\n  {len(stations)} active stations to snapshot.")
+    log(f"[harvest-aqi-snapshot] START — {len(stations)} stations")
 
-    started = datetime.datetime.utcnow().isoformat()
+    started   = now_iso()
     inserted  = 0
     skipped   = 0
     errors    = 0
@@ -94,21 +108,17 @@ def main() -> None:
             time.sleep(DELAY_SEC)
             continue
 
-        # Measured-at timestamp
-        raw_ts = (
-            idx.get("Data wykonania obliczeń indeksu")
-            or idx.get("Data danych źródłowych, z których policzono wartość indeksu dla wskaźnika st")
-        )
-        now_iso = datetime.datetime.utcnow().isoformat()
+        raw_ts = idx.get("Data wykonania obliczeń indeksu")
+        now_str = now_iso()
         if raw_ts:
             try:
                 measured_at = datetime.datetime.fromisoformat(
                     raw_ts.replace(" ", "T")
                 ).isoformat()
             except ValueError:
-                measured_at = now_iso
+                measured_at = now_str
         else:
-            measured_at = now_iso
+            measured_at = now_str
 
         row = {
             "station_id":  station_id,
@@ -122,7 +132,7 @@ def main() -> None:
             "co":    None,
             "c6h6":  None,
             "aqi_value": (
-                idx.get("Wartość indeksu") * 10
+                idx["Wartość indeksu"] * 10
                 if idx.get("Wartość indeksu") is not None else None
             ),
             "aqi_level": normalise_level(idx.get("Nazwa kategorii indeksu")),
@@ -132,12 +142,10 @@ def main() -> None:
             conn.execute("""
                 INSERT OR IGNORE INTO readings
                   (station_id, sensor_id, measured_at,
-                   pm25, pm10, no2, o3, so2, co, c6h6,
-                   aqi_value, aqi_level)
+                   pm25, pm10, no2, o3, so2, co, c6h6, aqi_value, aqi_level)
                 VALUES
                   (:station_id, :sensor_id, :measured_at,
-                   :pm25, :pm10, :no2, :o3, :so2, :co, :c6h6,
-                   :aqi_value, :aqi_level)
+                   :pm25, :pm10, :no2, :o3, :so2, :co, :c6h6, :aqi_value, :aqi_level)
             """, row)
             delta = conn.execute("SELECT changes()").fetchone()[0]
             if delta:
@@ -145,18 +153,15 @@ def main() -> None:
             else:
                 skipped += 1
         except Exception as e:
-            print(f"  ⚠ {station_id} insert error: {e}")
+            log(f"  ⚠ {station_id} insert error: {e}")
             errors += 1
 
-        # Progress every 50 stations
         if (i + 1) % 50 == 0 or i == len(stations) - 1:
-            print(f"  [{i+1}/{len(stations)}] inserted={inserted} skipped={skipped} errors={errors}")
+            log(f"  [{i+1}/{len(stations)}] inserted={inserted} skipped={skipped} errors={errors}")
 
         time.sleep(DELAY_SEC)
 
     conn.commit()
-
-    # Log
     conn.execute("""
         INSERT INTO harvest_log
           (script, phase, stations_processed, readings_inserted,
@@ -165,15 +170,12 @@ def main() -> None:
     """, (
         "harvest-aqi-snapshot.py", "aqi_snapshot",
         len(stations), inserted, errors,
-        started, datetime.datetime.utcnow().isoformat(),
+        started, now_iso(),
     ))
     conn.commit()
     conn.close()
 
-    print(f"\n── Done ──")
-    print(f"  Inserted:  {inserted}")
-    print(f"  Skipped:   {skipped} (duplicate timestamps)")
-    print(f"  Errors:    {errors}")
+    log(f"[harvest-aqi-snapshot] DONE — inserted={inserted} skipped={skipped} errors={errors}")
 
 
 if __name__ == "__main__":
