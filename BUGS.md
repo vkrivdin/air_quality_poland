@@ -83,6 +83,30 @@ It is a living document. Every entry follows the same structure.
 
 ---
 
+---
+
+### BUG-6 — SQLite "database is locked" under concurrent harvest scripts
+**Date:** 2026-03-18
+**Phase:** Local data collection (harvest scripts)
+**Symptom:** Running `harvest-aqi-snapshot.py` while `harvest-sensors.py` or `harvest-readings.py` was already running in the background produced repeated `⚠ insert error: database is locked` warnings. Some rows were silently skipped. Final counts appeared correct only because the fast snapshot happened to retry past the window.
+**Root cause:** All four harvest scripts called `sqlite3.connect(DB_PATH)` with no `timeout` argument. The default SQLite timeout is 5 seconds (some builds 0 seconds). When two scripts tried to write simultaneously, the second one failed immediately instead of waiting for the first to release the lock.
+**Fix:** Changed every `sqlite3.connect(DB_PATH)` call in all four harvest scripts to `sqlite3.connect(DB_PATH, timeout=30)`. 30 seconds is longer than any single transaction in these scripts, so the second writer will always wait and succeed rather than error.
+**Principle:** Every SQLite connection in harvest scripts (or any script that may run concurrently with another writer) MUST use `sqlite3.connect(path, timeout=30)`. Never use the bare `sqlite3.connect(path)` default — it will produce silent data loss when two processes write at the same time. This applies even with `PRAGMA journal_mode=WAL` — WAL reduces contention but does not eliminate write lock timeouts.
+**Added to AGENTS.md:** yes
+
+---
+
+### BUG-7 — harvest-readings.py had no time-window filter (--days-back missing)
+**Date:** 2026-03-18
+**Phase:** Local data collection (harvest scripts)
+**Symptom:** There was no way to restrict the harvest to a specific time window. The script fetched whatever the GIOŚ API returned (~3 days) and stored all of it. Users wanting a year of history (build up over many daily runs) or a single week of data had no mechanism to discard out-of-window rows.
+**Root cause:** The script was written to "fetch all available data" without considering that the caller needs control over the time window, both to limit DB size and to express intent ("I want the last 7 days" vs "I want the last year").
+**Fix:** Added `--days-back N` argument to `harvest-readings.py`. When set, any data point whose `measured_at` is older than `now - N days` is discarded before insert. The flag is optional — omitting it keeps original behaviour (store everything returned by the API). Added `notes` column logging to `harvest_log` so runs with `--days-back` are distinguishable in the history.
+**Principle:** Any harvest script that fetches time-series data MUST expose a `--days-back N` flag. Default behaviour (no flag) should be maximally inclusive (keep everything). When the flag is set, filter data points before inserting — never rely on the API to truncate the window for you. Document the flag clearly in the module docstring with examples.
+**Added to AGENTS.md:** yes
+
+---
+
 ## Promoted principles
 
 Principles that have appeared in two or more bugs are promoted to AGENTS.md and marked here.
@@ -90,3 +114,5 @@ Principles that have appeared in two or more bugs are promoted to AGENTS.md and 
 - **BUG-1** → Leaflet tile URL verification rule → promoted to AGENTS.md `## Hard-won rules`
 - **BUG-2** → Leaflet z-index clearance rule → promoted to AGENTS.md `## Hard-won rules`
 - **BUG-3** → fitBounds for city views rule → promoted to AGENTS.md `## Hard-won rules`
+- **BUG-6** → SQLite concurrent write timeout rule → promoted to AGENTS.md `## Hard-won rules`
+- **BUG-7** → Time-window flag for harvest scripts → promoted to AGENTS.md `## Hard-won rules`

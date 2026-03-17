@@ -2,23 +2,35 @@
 """
 harvest-readings.py
 --------------------
-Fetches all available historical readings for every sensor in local.db.
+Fetches historical readings for every sensor in local.db.
 
-The GIOŚ /data/getData endpoint returns ~3 days of hourly data per sensor.
-This script iterates through all sensors, fetching and storing all available data.
+The GIOŚ /data/getData endpoint returns ~3 days of hourly data per call.
+This script iterates through sensors, stores every data point, and tracks
+progress so it is fully resumable.
 
-RESUMABLE: Tracks progress in sensor_harvest_state. Re-running skips sensors
-already fetched. Use --refetch N to refresh sensors not updated in N days.
+DAYS-BACK:
+  By default the script accepts ALL data the API returns (typically ~3 days).
+  Use --days-back N to discard data points older than N days from now.
+  Examples:
+    --days-back 7    → keep only the past week
+    --days-back 365  → keep up to a year (API still returns ~3 days per call,
+                       so combine with --refetch 1 run daily to build up history)
+
+RESUMABLE:
+  Progress is tracked in sensor_harvest_state. Re-running skips sensors
+  already fetched. Use --refetch N to re-fetch sensors not updated in N days.
 
 Rate: 1 request per 31 seconds (conservative 2/min limit).
 Full national run (~1700+ sensors): plan for overnight runs.
 
 Usage:
-  python3 scripts/harvest-readings.py                    # resume from last stop
-  python3 scripts/harvest-readings.py --city Kraków      # Kraków only (~56 sensors, ~30 min)
-  python3 scripts/harvest-readings.py --limit 20         # first 20 unfetched sensors
-  python3 scripts/harvest-readings.py --refetch 7        # re-fetch sensors not updated in 7 days
-  python3 scripts/harvest-readings.py --sensor 2752      # fetch one specific sensor id
+  python3 scripts/harvest-readings.py                        # resume
+  python3 scripts/harvest-readings.py --city Kraków          # one city
+  python3 scripts/harvest-readings.py --city Kraków --days-back 7
+  python3 scripts/harvest-readings.py --limit 20             # first 20
+  python3 scripts/harvest-readings.py --refetch 7            # refresh stale
+  python3 scripts/harvest-readings.py --sensor 2752          # single sensor
+  python3 scripts/harvest-readings.py --days-back 365        # last year only
 
 Progress is logged to data/harvest.log — follow with: tail -f data/harvest.log
 """
@@ -130,15 +142,23 @@ def build_todo(conn: sqlite3.Connection, args: argparse.Namespace) -> list:
 def main() -> None:
     os.makedirs(os.path.dirname(LOG_PATH), exist_ok=True)
     parser = argparse.ArgumentParser()
-    parser.add_argument("--city",    type=str,  default=None)
-    parser.add_argument("--limit",   type=int,  default=None)
-    parser.add_argument("--refetch", type=int,  default=None,
+    parser.add_argument("--city",      type=str,  default=None)
+    parser.add_argument("--limit",     type=int,  default=None)
+    parser.add_argument("--refetch",   type=int,  default=None,
                         help="Re-fetch sensors not updated in N days")
-    parser.add_argument("--sensor",  type=int,  default=None,
+    parser.add_argument("--sensor",    type=int,  default=None,
                         help="Fetch a single sensor by GIOŚ id")
+    parser.add_argument("--days-back", type=int,  default=None,
+                        help="Discard data points older than N days from now "
+                             "(e.g. --days-back 7 keeps only the past week)")
     args = parser.parse_args()
 
-    conn = sqlite3.connect(DB_PATH)
+    # Compute the earliest timestamp we will accept, if --days-back is set
+    cutoff_dt: datetime.datetime | None = None
+    if args.days_back is not None:
+        cutoff_dt = datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=args.days_back)
+
+    conn = sqlite3.connect(DB_PATH, timeout=30)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA foreign_keys=ON")
@@ -147,8 +167,10 @@ def main() -> None:
     if args.limit:
         todo = todo[:args.limit]
 
-    log(f"[harvest-readings] START — {len(todo)} sensors to fetch" +
-        (f" (city={args.city})" if args.city else ""))
+    window_str = f" | window=last {args.days_back}d" if args.days_back else ""
+    log(f"[harvest-readings] START — {len(todo)} sensors to fetch"
+        + (f" (city={args.city})" if args.city else "")
+        + window_str)
 
     if not todo:
         log("  Nothing to do.")
@@ -190,9 +212,18 @@ def main() -> None:
                 continue
             try:
                 dt  = datetime.datetime.fromisoformat(dt_str.replace(" ", "T"))
+                # Make timezone-aware for comparison if needed
+                if dt.tzinfo is None:
+                    dt = dt.replace(tzinfo=datetime.timezone.utc)
                 iso = dt.isoformat()
             except ValueError:
                 iso = dt_str
+                dt  = None
+
+            # Apply --days-back filter
+            if cutoff_dt is not None and dt is not None:
+                if dt < cutoff_dt:
+                    continue
 
             row: dict = {
                 "station_id":  station_id,
@@ -245,12 +276,13 @@ def main() -> None:
     conn.execute("""
         INSERT INTO harvest_log
           (script, phase, stations_processed, readings_inserted,
-           errors_count, started_at, finished_at)
-        VALUES (?,?,?,?,?,?,?)
+           errors_count, started_at, finished_at, notes)
+        VALUES (?,?,?,?,?,?,?,?)
     """, (
         "harvest-readings.py", "readings",
         len(todo), total_inserted, total_errors,
         started, now_iso(),
+        f"days_back={args.days_back}" if args.days_back else None,
     ))
     conn.commit()
     conn.close()

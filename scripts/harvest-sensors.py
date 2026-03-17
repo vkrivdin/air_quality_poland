@@ -63,7 +63,9 @@ def main() -> None:
     parser.add_argument("--city",  type=str, default=None)
     args = parser.parse_args()
 
-    conn = sqlite3.connect(DB_PATH)
+    # timeout=30: waits up to 30s for SQLite write lock instead of failing
+    # immediately when another harvest script is running concurrently (BUG-6)
+    conn = sqlite3.connect(DB_PATH, timeout=30)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")
 

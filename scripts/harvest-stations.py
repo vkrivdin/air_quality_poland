@@ -52,7 +52,9 @@ def main() -> None:
         log(f"❌ Database not found at {DB_PATH}. Run: python3 scripts/local-db/init.py")
         return
 
-    conn = sqlite3.connect(DB_PATH)
+    # timeout=30: waits up to 30s for SQLite write lock instead of failing
+    # immediately when another harvest script is running concurrently (BUG-6)
+    conn = sqlite3.connect(DB_PATH, timeout=30)
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA foreign_keys=ON")
 

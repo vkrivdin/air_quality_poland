@@ -79,3 +79,18 @@ map.fitBounds(
 );
 ```
 Never fall back to a fixed centre point for a multi-station city view — the stations may be spread across the city and a fixed centre will be wrong.
+
+### SQLite concurrent write timeout (BUG-6)
+Every SQLite connection in a harvest script MUST use `timeout=30`:
+```python
+conn = sqlite3.connect(DB_PATH, timeout=30)
+```
+Never use bare `sqlite3.connect(path)` — the default timeout (5 s or 0 s depending on build) causes silent data loss when two scripts write concurrently. `PRAGMA journal_mode=WAL` reduces contention but does not eliminate write lock timeouts. 30 seconds exceeds the duration of any single transaction in these scripts.
+
+### Time-window flag for harvest scripts (BUG-7)
+Every script that fetches time-series data MUST accept a `--days-back N` argument:
+```python
+parser.add_argument("--days-back", type=int, default=None,
+                    help="Discard data points older than N days from now")
+```
+Default (no flag) = store everything the API returns. When set, filter rows **before** inserting — never rely on the API to honour a time window. Document the flag with usage examples in the module docstring. Log the value in `harvest_log.notes` so runs are distinguishable in history.
