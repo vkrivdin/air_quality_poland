@@ -94,3 +94,14 @@ parser.add_argument("--days-back", type=int, default=None,
                     help="Discard data points older than N days from now")
 ```
 Default (no flag) = store everything the API returns. When set, filter rows **before** inserting — never rely on the API to honour a time window. Document the flag with usage examples in the module docstring. Log the value in `harvest_log.notes` so runs are distinguishable in history.
+
+### Always record failed fetches in harvest state (BUG-8)
+When a sensor fetch fails (any HTTP error, empty response, exception), still write it to `sensor_harvest_state` with `total_rows=0`:
+```python
+conn.execute("""
+    INSERT INTO sensor_harvest_state (sensor_id, station_id, last_fetched, oldest_date, total_rows)
+    VALUES (?,?,?,NULL,0)
+    ON CONFLICT(sensor_id) DO UPDATE SET last_fetched = excluded.last_fetched
+""", (sensor_id, station_id, now_iso()))
+```
+Never skip state recording on the error path. An unrecorded sensor stays in the todo list forever and wastes 31 seconds of rate-limit budget on every subsequent run. Use `--refetch N` as the intentional retry mechanism for sensors you want to retry.

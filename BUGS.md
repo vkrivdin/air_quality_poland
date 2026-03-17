@@ -107,6 +107,17 @@ It is a living document. Every entry follows the same structure.
 
 ---
 
+### BUG-8 — harvest-readings.py retried HTTP 400 sensors on every run
+**Date:** 2026-03-18
+**Phase:** Local data collection (harvest scripts)
+**Symptom:** Sensors returning `HTTP Error 400` (retired/invalid GIOŚ sensor IDs) were attempted on every single run of `harvest-readings.py`. They wasted 31 seconds per sensor per run and cluttered the log with known-bad errors.
+**Root cause:** The `if not data: continue` path skipped recording the sensor in `sensor_harvest_state`. Only successful fetches were tracked. So failed sensors stayed in the "never fetched" bucket and were included in every `todo` list.
+**Fix:** Added an `INSERT ... ON CONFLICT DO UPDATE` into `sensor_harvest_state` in the error path, recording `total_rows=0` and `last_fetched=now`. On the next default run the sensor is skipped. Use `--refetch N` to force a retry after N days if needed.
+**Principle:** A failed fetch (HTTP error, empty response) MUST still write a record to `sensor_harvest_state` with `total_rows=0`. Never leave a sensor unrecorded after attempting it — unrecorded sensors get retried every run, wasting rate-limit budget and polluting logs with known-permanent errors. Use `--refetch N` as the intentional retry mechanism.
+**Added to AGENTS.md:** yes
+
+---
+
 ## Promoted principles
 
 Principles that have appeared in two or more bugs are promoted to AGENTS.md and marked here.

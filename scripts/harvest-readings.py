@@ -193,6 +193,16 @@ def main() -> None:
         data = fetch(f"{BASE_URL}/data/getData/{sensor_id}")
         if not data:
             total_errors += 1
+            # Record failed sensors in state so they are skipped on next run
+            # rather than retried indefinitely (BUG-8)
+            conn.execute("""
+                INSERT INTO sensor_harvest_state
+                  (sensor_id, station_id, last_fetched, oldest_date, total_rows)
+                VALUES (?,?,?,NULL,0)
+                ON CONFLICT(sensor_id) DO UPDATE SET
+                  last_fetched = excluded.last_fetched
+            """, (sensor_id, station_id, now_iso()))
+            conn.commit()
             if i < len(todo) - 1:
                 time.sleep(DELAY_SEC)
             continue
