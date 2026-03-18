@@ -4,7 +4,34 @@ This works with Cursor, Claude Code, Perplexity Computer, GitHub Copilot, Gemini
 
 ---
 
-## What to put in your repo root (do this once)
+## Before you start — one-time setup checklist
+
+`docs/build-plan.md` is complete. Before giving the agent any feature work, confirm these are done:
+
+```bash
+# 1. No stale delivery folders inside the project root
+rm -rf changes_unpacked/ powietrze-changes.zip
+
+# 2. Dependencies installed (node_modules must exist)
+npm install
+
+# 3. better-sqlite3 installed (required by localDb.ts and all new API routes)
+npm install --save-exact better-sqlite3@9.4.3 @types/better-sqlite3@7.6.8
+
+# 4. TypeScript clean on src/ only
+npx tsc --noEmit 2>&1 | grep "^src/"
+# Expected: no output (zero errors in src/)
+
+# 5. local.db exists and has data
+python3 -c "import sqlite3; c=sqlite3.connect('data/local.db'); print(c.execute('SELECT COUNT(*) FROM stations').fetchone())"
+# Expected: (289,) or higher
+```
+
+None of these are the agent's job. Do them once manually before the first agent session.
+
+---
+
+## What to put in your repo root (already done)
 
 ```
 AGENTS.md                        ← universal — every tool reads this
@@ -18,34 +45,23 @@ All the substance is in `AGENTS.md`. The other files are one-liners that redirec
 
 ---
 
-## What to put in docs/
+## How to give the agent a feature build task
 
-```
-docs/build-plan.md
-docs/ui-component-reference.md
-docs/file-tree.md
-docs/aqi-config.ts
-docs/aqi-config-spec.md
-```
-
-These already exist from the planning session. Do not modify them unless you are updating a decision.
-
----
-
-## How to give the agent a task
-
-Use **agent mode** (not chat mode) in whatever tool you are using. Agent mode can read files, run terminal commands, and verify output. Chat mode cannot.
+Use **agent mode** (not chat mode). Agent mode can read files, run terminal commands, and verify output. Chat mode cannot.
 
 Use a fresh conversation for each build step. Do not accumulate steps in one long conversation — context drift causes the agent to ignore earlier rules.
 
-Give the agent this exact prompt, replacing N.N with the step number:
+Give the agent this exact prompt, replacing F0.1 with the step you want:
 
 ```
-Execute build step N.N from docs/build-plan.md.
+Read docs/pre-build-notes.md before doing anything else.
+
+Then execute step F0.1 from docs/feature-build-plan-v2.md.
 
 Before writing any code:
 - Read every file listed under READS in that step
 - Read src/lib/aqi-config.ts
+- Read docs/pre-build-notes.md sections relevant to this step
 
 Produce only the files listed under PRODUCES.
 Follow INSTRUCTIONS in order.
@@ -53,6 +69,25 @@ Check every CONSTRAINT.
 Run every VERIFY command and confirm expected output.
 Use the exact COMMIT string for the git commit message.
 ```
+
+---
+
+## Execution order for feature-build-plan-v2.md
+
+Steps must be done in this order. Each depends on the previous.
+
+```
+F0.1 → F0.2 → F0.3   (foundation — must complete before anything else)
+F1.1 → F1.2 → F1.3   (station card)
+F2.1 → F2.2           (metric cards)
+F3.1                   (context activity panel)
+F4.1                   (band chart)
+F5.1 → F5.2 → F5.3   (timeline)
+F6.1                   (compare panel — independent, can run after F5)
+F7.1                   (day pulse strip — independent, can run after F5)
+```
+
+F6 and F7 are independent of each other and can be run in any order after F5.3.
 
 ---
 
@@ -80,7 +115,7 @@ Use the exact COMMIT string for the git commit message.
 
 **Windsurf** — reads `AGENTS.md` automatically.
 
-**Any other tool** — paste `AGENTS.md` contents manually as the first message if the tool does not auto-load it. Every tool that can read files will find it at the project root.
+**Any other tool** — paste `AGENTS.md` contents manually as the first message if the tool does not auto-load it.
 
 ---
 
