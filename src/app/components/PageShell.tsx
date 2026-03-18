@@ -25,6 +25,7 @@ import CityPanel from "./CityPanel";
 import { giosLabelToKey, AQI_LEVEL_CONFIGS, AQI_NO_DATA_CONFIG } from "@/lib/aqi-config";
 import WarningBanner from "./WarningBanner";
 import Footer from "./Footer";
+import TodayStory from "./TodayStory";
 import type { StationSummary, KrakowStation } from "@/lib/types";
 
 type NationalSummary = {
@@ -81,41 +82,8 @@ export default function PageShell({
         }
       />
 
-      {/* ── National summary strip ── */}
-      {national && (
-        <div style={{
-          display: "flex",
-          gap: 8,
-          padding: "8px 16px",
-          background: "var(--color-background-primary)",
-          borderBottom: "0.5px solid var(--color-border-tertiary)",
-          overflowX: "auto",
-          flexShrink: 0,
-        }}>
-          {[
-            { label: lang === "pl" ? "Najgorsze" : "Worst",  data: national.worst,  color: "#A32D2D" },
-            { label: lang === "pl" ? "Mediana"   : "Median", data: national.median, color: "#854F0B" },
-            { label: lang === "pl" ? "Najlepsze" : "Best",   data: national.best,   color: "#0F6E56" },
-          ].map(({ label, data, color }) => (
-            <div key={label} style={{
-              display: "flex", alignItems: "center", gap: 8,
-              background: "var(--color-background-secondary)",
-              borderRadius: 8, padding: "5px 12px",
-              flexShrink: 0,
-            }}>
-              <span style={{ fontSize: 10, color: "var(--color-text-secondary)", whiteSpace: "nowrap" }}>
-                {label}
-              </span>
-              <span style={{ fontSize: 13, fontWeight: 500, color, whiteSpace: "nowrap" }}>
-                {data.city}
-              </span>
-              <span style={{ fontSize: 11, color: "var(--color-text-secondary)", whiteSpace: "nowrap" }}>
-                {data.pm25} µg/m³
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
+      {/* ── Today's Story — replaces worst/median/best strip (v2 F0.1) ── */}
+      <TodayStory lang={lang} />
 
       {/* ── Main area — flex:1, overflow hidden so children define their own scroll ── */}
       <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>

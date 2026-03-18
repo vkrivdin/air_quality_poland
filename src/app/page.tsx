@@ -5,42 +5,63 @@
  * App Router page props. Computes national summary and city-specific data,
  * then passes everything to PageShell (Client Component).
  *
- * Supports any city in stations-summary.json, not just Kraków.
- * Kraków additionally gets full sensor readings from krakow-readings.json.
+ * DATA SOURCE PRIORITY (first match wins):
+ *   1. USE_LOCAL_DB=true (or data/local.db exists) → localDb.ts  (SQLite)
+ *   2. SUPABASE_URL is set                         → supabaseData.ts
+ *   3. Fallback                                    → localData.ts (JSON snapshots)
+ *
+ * All three sources return the same StationSummary shape — components are unaware
+ * of which source is active and need no changes when switching.
  */
 
 import PageShell from "@/app/components/PageShell";
+import { giosLabelToKey, getLevelConfig } from "@/lib/aqi-config";
+import type { StationSummary } from "@/lib/types";
+import fs from "fs";
+import path from "path";
 
-// ─── Data source toggle ───────────────────────────────────────────────────────
-// When SUPABASE_URL is set, use live Supabase queries.
-// Otherwise fall back to local JSON snapshot (demo mode — no env vars needed).
-const USE_SUPABASE = Boolean(
-  process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL
-);
+// ─── Data source toggle ────────────────────────────────────────────────────────
 
+// Priority 1: local SQLite DB (set USE_LOCAL_DB=true in .env.local, or just
+// have data/local.db present on disk — detected automatically)
+const LOCAL_DB_PATH = path.resolve(process.cwd(), "data/local.db");
+const USE_LOCAL_DB =
+  process.env.USE_LOCAL_DB === "true" || fs.existsSync(LOCAL_DB_PATH);
+
+// Priority 2: Supabase (only if local.db is not present)
+const USE_SUPABASE =
+  !USE_LOCAL_DB &&
+  Boolean(process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL);
+
+import * as localDb from "@/lib/localDb";
 import * as localData from "@/lib/localData";
 import * as supabaseData from "@/lib/supabaseData";
 
+function getDataSource() {
+  if (USE_LOCAL_DB) return localDb;
+  if (USE_SUPABASE) return supabaseData;
+  return localData;
+}
+
 async function getAllStations() {
-  return USE_SUPABASE ? supabaseData.getAllStations() : localData.getAllStations();
+  return getDataSource().getAllStations();
 }
 async function getStationsByCity(slug: string) {
-  return USE_SUPABASE ? supabaseData.getStationsByCity(slug) : localData.getStationsByCity(slug);
+  return getDataSource().getStationsByCity(slug);
 }
 async function slugToCity(slug: string) {
-  return USE_SUPABASE ? supabaseData.slugToCity(slug) : localData.slugToCity(slug);
-}
-async function getPrimaryKrakowStation() {
-  return USE_SUPABASE ? supabaseData.getPrimaryKrakowStation() : localData.getPrimaryKrakowStation();
+  return getDataSource().slugToCity(slug);
 }
 async function getPrimaryStation(slug: string) {
-  return USE_SUPABASE ? supabaseData.getPrimaryStation(slug) : localData.getPrimaryKrakowStation();
+  const src = getDataSource();
+  if ("getPrimaryStation" in src) {
+    return (src as typeof localDb).getPrimaryStation(slug);
+  }
+  // supabaseData & localData use getPrimaryKrakowStation as a fallback
+  return (src as typeof localData).getPrimaryKrakowStation();
 }
 
-import { giosLabelToKey, getLevelConfig } from "@/lib/aqi-config";
-import type { StationSummary } from "@/lib/types";
-
-// ─── National summary ─────────────────────────────────────────────────────────
+// ─── National summary (computed from station list) ────────────────────────────
 
 function stationScore(s: StationSummary): number {
   return getLevelConfig(giosLabelToKey(s.aqi.level_name)).score;
@@ -64,7 +85,9 @@ type NationalSummary = {
 };
 
 function computeNationalSummary(stations: StationSummary[]): NationalSummary | null {
-  const withData = stations.filter((s) => giosLabelToKey(s.aqi.level_name) !== "no_data");
+  const withData = stations.filter(
+    (s) => giosLabelToKey(s.aqi.level_name) !== "no_data"
+  );
   if (withData.length === 0) return null;
 
   const sorted = [...withData].sort((a, b) => {
@@ -83,7 +106,7 @@ function computeNationalSummary(stations: StationSummary[]): NationalSummary | n
   };
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// ─── Page ──────────────────────────────────────────────────────────────────────
 
 type SearchParams = Promise<{ city?: string }> | { city?: string };
 
@@ -98,16 +121,14 @@ export default async function HomePage({
   const allStations = await getAllStations();
   const national    = computeNationalSummary(allStations);
 
-  // City-specific data (empty/null for no selection)
-  const cityStations   = cityParam ? await getStationsByCity(cityParam) : [];
-  const cityName       = cityParam ? await slugToCity(cityParam) : null;
+  const cityStations = cityParam ? await getStationsByCity(cityParam) : [];
+  const cityName     = cityParam ? await slugToCity(cityParam) : null;
 
-  // Primary station for selected city — works for any city with Supabase data
-  let primarySummary = null;
+  let primarySummary  = null;
   let primaryReadings = undefined;
   if (cityParam && cityStations.length > 0) {
-    const primary = await getPrimaryStation(cityParam);
-    primarySummary = primary.summary ?? null;
+    const primary   = await getPrimaryStation(cityParam);
+    primarySummary  = primary.summary ?? null;
     primaryReadings = primary.readings;
   }
 

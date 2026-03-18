@@ -14,6 +14,8 @@
 
 import AqiBadge from "./AqiBadge";
 import AqiDashboardCard from "./AqiDashboardCard";
+import ShareButton from "./ShareButton";
+import DataFreshnessBanner from "./DataFreshnessBanner";
 import { giosLabelToKey, getLevelConfig, AQI_LEVEL_CONFIGS } from "@/lib/aqi-config";
 import type { AqiLevelKey, AqiLevelConfig } from "@/lib/aqi-config";
 import type { StationSummary, KrakowStation } from "@/lib/types";
@@ -192,20 +194,26 @@ export default function CityPanel({
         >
           ← {lang === "pl" ? "Mapa Polski" : "Poland map"}
         </a>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-          <h2 style={{
-            fontSize: 18,
-            fontWeight: 600,
-            color: "var(--color-text-primary)",
-            margin: 0,
-          }}>
-            {cityName}
-          </h2>
-          <span style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>
-            {stations.length} {lang === "pl"
-              ? stations.length === 1 ? "stacja" : stations.length < 5 ? "stacje" : "stacji"
-              : stations.length === 1 ? "station" : "stations"}
-          </span>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+            <h2 style={{
+              fontSize: 18,
+              fontWeight: 600,
+              color: "var(--color-text-primary)",
+              margin: 0,
+            }}>
+              {cityName}
+            </h2>
+            <span style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>
+              {stations.length} {lang === "pl"
+                ? stations.length === 1 ? "stacja" : stations.length < 5 ? "stacje" : "stacji"
+                : stations.length === 1 ? "station" : "stations"}
+            </span>
+          </div>
+          <ShareButton lang={lang} />
+        </div>
+        <div style={{ marginTop: 8 }}>
+          <DataFreshnessBanner stations={stations} lang={lang} />
         </div>
       </div>
 
