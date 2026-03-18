@@ -118,6 +118,24 @@ It is a living document. Every entry follows the same structure.
 
 ---
 
+### BUG-9 — localDb.ts: three data display bugs found on first render
+**Date:** 2026-03-18
+**Phase:** Local DB wiring (Phase F0)
+**Symptom:** App showed "Brak danych z czujników" for all Kraków stations and "0 miast z dobrym powietrzem" in TodayStory, despite 631 readings in the database.
+**Root cause (three related issues):**
+  1. `getLatestReadings` used `MAX(measured_at)` without tie-breaking: when two sensor rows share the exact same timestamp, the JOIN returns both. The `Map` kept the first row which had all-NULL pollutant columns.
+  2. Timestamp format mismatch: stored readings use naive ISO (`2026-03-18T00:00:00`), but `Date.now().toISOString()` produces timezone-aware ISO (`2026-03-18T06:17:49.972190+00:00`). SQLite string comparison fails — `"2026-03-18T00:00:00" < "2026-03-18T06:17:49+00:00"` is not reliably true across all formats.
+  3. AQI snapshot rows store GIOŚ sub-index scores (0–5) in `pm25`/`pm10`/`no2` columns, not real µg/m³. The merge logic was returning these as pollutant values.
+**Fix:**
+  1. Rewrote `getLatestReadings` to separately query AQI snapshot rows (sensor_id IS NULL) and sensor harvest rows (sensor_id IS NOT NULL), tie-break by counting non-null pollutant columns, then merge: AQI level from snapshot + real values from sensor harvest.
+  2. Added `stripTz` helper in the API route and `localDb.ts` queries to strip timezone suffix before comparison with stored naive timestamps.
+  3. When only snapshot data is available (no sensor harvest yet), null out `pm25/pm10/no2/o3/so2/co/c6h6` before returning — sub-index scores must never reach UI components as pollutant values.
+**Principle:** SQLite stores timestamps as plain strings — always strip timezone suffixes before comparing with stored values. NEVER mix timezone-aware ISO strings with naive ISO strings in SQLite `WHERE measured_at >= ?` queries. Use `iso.replace(/[+Z].*$/, "")` before passing to SQLite.
+**Principle 2:** When a database stores multiple row types for the same time series (AQI snapshot vs sensor harvest), document the semantic difference in the schema or a code comment, and always query them separately before merging. Mixing them in a single `MAX()` query produces unpredictable results.
+**Added to AGENTS.md:** yes
+
+---
+
 ## Promoted principles
 
 Principles that have appeared in two or more bugs are promoted to AGENTS.md and marked here.

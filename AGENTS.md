@@ -4,27 +4,22 @@ Air quality web app for Poland (Next.js 16, TypeScript, Supabase, Leaflet, Recha
 
 ## Start here
 
-`docs/build-plan.md` is **complete**. Do not re-execute its steps.
-
 Before writing any code, read these files in this order:
 
-1. `docs/pre-build-notes.md` — read this first; critical data corrections and wiring notes
-2. `docs/feature-build-plan-v2.md` — find the first incomplete step, execute it
-3. `docs/file-tree.md` — verify your output matches the expected structure
-4. `src/lib/aqi-config.ts` — every AQI value you need is here
-5. `docs/ui-component-reference.md` — exact TypeScript interfaces for every component
-6. `BUGS.md` — read all principles before writing any code
+1. `docs/build-plan.md` — find the first incomplete step, execute it
+2. `docs/file-tree.md` — verify your output matches the expected structure
+3. `src/lib/aqi-config.ts` — every value you need is here (or `docs/aqi-config.ts` if not yet copied)
+4. `docs/ui-component-reference.md` — exact TypeScript interfaces for every component
+5. `BUGS.md` — read all principles before writing any code
 
 ## Non-negotiable rules
 
 - All AQI colours, thresholds, copy strings, and benchmark numbers come from `src/lib/aqi-config.ts` — never hardcode them
-- New components use inline styles, not Tailwind classes
+- New components (Phase 2+) use inline styles, not Tailwind classes
 - TypeScript strict mode — no `any`
 - `"use client"` on any component using browser APIs or stateful hooks
 - Polish identity colours (`#D4213D`, `#E9E8E7`) only in: `Navbar`, `PolishFlagIcon`, `SourceBadge`, `LanguageSwitcher`
 - Never modify protected files — see `docs/file-tree.md` for the full list
-- Never modify `data/local.db` directly — only harvest scripts in `scripts/` write to it
-- Never modify `scripts/*.py` during the feature build
 
 ## Commands
 
@@ -37,7 +32,7 @@ npm run lint         # ESLint
 
 ## How to execute a build step
 
-Each step in `docs/feature-build-plan-v2.md` specifies: READS / PRODUCES / INSTRUCTIONS / CONSTRAINTS / VERIFY / COMMIT.
+Each step in `docs/build-plan.md` specifies: READS / PRODUCES / INSTRUCTIONS / CONSTRAINTS / VERIFY / COMMIT.
 Follow that structure exactly. One commit per step. Use the exact commit message string from the step.
 
 ## If something is ambiguous
@@ -45,7 +40,6 @@ Follow that structure exactly. One commit per step. Use the exact commit message
 Check `docs/ui-component-reference.md` for component interfaces.
 Check `docs/file-tree.md` for correct file paths.
 Check `src/lib/aqi-config.ts` for any value that might come from config.
-Check `docs/pre-build-notes.md` for data layer gotchas.
 Do not guess — stop and ask.
 
 ## When you find or fix a bug
@@ -57,7 +51,7 @@ Do not guess — stop and ask.
 
 ## Hard-won rules
 
-Principles promoted from BUGS.md after proving their worth. Each starts with the BUG-N or DATA-N reference.
+Principles promoted from BUGS.md after proving their worth. Each starts with the BUG-N reference.
 
 ### Leaflet tile URLs (BUG-1)
 Before writing any Leaflet `tileLayer` URL, verify it returns HTTP 200:
@@ -112,22 +106,23 @@ conn.execute("""
 ```
 Never skip state recording on the error path. An unrecorded sensor stays in the todo list forever and wastes 31 seconds of rate-limit budget on every subsequent run. Use `--refetch N` as the intentional retry mechanism for sensors you want to retry.
 
-### `readings.aqi_level` stores internal keys, not display strings (DATA-1)
-Rows in `readings` (written by `harvest-aqi-snapshot.py`) store internal keys like `"bardzo_dobry"`, `"zly"`, `"brak_indeksu"` — NOT Polish display strings like `"Bardzo dobry"`.
-Do NOT call `giosLabelToKey()` on `readings.aqi_level` — it already IS the key.
-`giosLabelToKey()` is only for `StationSummary.aqi.level_name` which comes from the static JSON snapshot.
-Treat `"brak_indeksu"` and `NULL` as `"no_data"` in all API routes:
-```typescript
-const levelKey: AqiLevelKey = (
-  r.aqi_level === "brak_indeksu" || !r.aqi_level ? "no_data" : r.aqi_level
-) as AqiLevelKey;
-```
+### SQLite timestamp comparison — always strip timezone (BUG-9)
+SQLite has no native datetime type — timestamps are stored as plain strings (e.g. `2026-03-18T00:00:00`). JavaScript's `Date.toISOString()` produces timezone-aware strings (`2026-03-18T06:17:49.972190+00:00`). String comparison between these formats is unreliable and breaks `WHERE measured_at >= ?` queries.
 
-### `readings.pm25` from AQI snapshots are index scores, not µg/m³ (DATA-2)
-Rows where `sensor_id IS NULL` (AQI snapshots from `harvest-aqi-snapshot.py`) store GIOŚ index values (0–5 scale × 10) in the pm25/pm10/no2 columns. These are NOT real concentration values.
-Real µg/m³ values only exist in rows where `sensor_id IS NOT NULL` (from `harvest-readings.py`).
-All concentration-based queries (charts, percentile bands, trend analysis) MUST filter:
-```sql
-WHERE sensor_id IS NOT NULL AND pm25 IS NOT NULL
+Always strip the timezone suffix before passing an ISO string to SQLite:
+```typescript
+const cutoff = new Date(Date.now() - 3 * 3600 * 1000)
+  .toISOString()
+  .replace(/[+Z].*$/, ""); // "2026-03-18T03:17:49.972"
 ```
-Never mix index scores with concentration values in the same computation. Passing an index score of `3.0` to `pm25ToLevelKey()` returns `"bardzo_dobry"` — technically valid but semantically wrong.
+Applies everywhere: API routes, localDb.ts, harvest scripts.
+
+### Never mix AQI snapshot and sensor harvest in one MAX() query (BUG-9)
+The `readings` table has two row types with different semantics:
+- `sensor_id IS NULL` — AQI snapshot: `aqi_level`, `aqi_value` valid; `pm25/pm10/no2` are GIOŚ sub-index scores (0–5), NOT µg/m³
+- `sensor_id IS NOT NULL` — sensor harvest: `pm25/pm10/no2` are real µg/m³; `aqi_level` is NULL
+
+Always query them separately and merge in code:
+1. AQI snapshot → provides `aqi_level`, `color`, `calc_date`
+2. Sensor harvest → provides real pollutant values
+Never pass sub-index scores (0–5) to UI components as µg/m³ values.

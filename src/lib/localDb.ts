@@ -140,32 +140,114 @@ function toStationSummary(
 // ─── Core query: latest reading per station ────────────────────────────────────
 
 /**
- * Returns the most recent reading row for each station.
- * Uses a window function to avoid a separate query per station.
+ * Returns the best available reading for each station:
+ * - For AQI level/color: the most recent AQI snapshot row (sensor_id IS NULL)
+ * - For pollutant values (pm25, pm10, no2...): the most recent sensor row (sensor_id NOT NULL)
+ *
+ * These are merged into one synthetic ReadingRow per station so components
+ * see both a valid aqi_level AND real µg/m³ values.
+ *
+ * Background: AQI snapshot rows store GIOŚ sub-index scores (0–5) in the
+ * pm25/pm10/no2 columns — NOT µg/m³. Only sensor harvest rows have real values.
  */
 function getLatestReadings(db: Database.Database): Map<string, ReadingRow> {
-  const rows = db
+  // Strip timezone suffix so string comparison works with stored naive timestamps
+  const nowStr = new Date().toISOString().replace(/\+.*$/, "").replace(/Z$/, "");
+
+  // Latest AQI snapshot per station (aqi_level + aqi_value)
+  const snapshotRows = db
     .prepare(
-      `
-      SELECT r.*
-      FROM readings r
-      INNER JOIN (
-        SELECT station_id, MAX(measured_at) AS latest
-        FROM readings
-        GROUP BY station_id
-      ) latest_r ON r.station_id = latest_r.station_id
-                AND r.measured_at = latest_r.latest
-    `
+      `SELECT r.*
+       FROM readings r
+       INNER JOIN (
+         SELECT station_id, MAX(measured_at) AS latest
+         FROM readings
+         WHERE sensor_id IS NULL
+         GROUP BY station_id
+       ) best ON r.station_id = best.station_id
+             AND r.measured_at = best.latest
+             AND r.sensor_id IS NULL`
     )
     .all() as ReadingRow[];
 
-  const map = new Map<string, ReadingRow>();
-  for (const row of rows) {
-    if (!map.has(row.station_id)) {
-      map.set(row.station_id, row);
+  const snapshotMap = new Map<string, ReadingRow>();
+  for (const row of snapshotRows) {
+    if (!snapshotMap.has(row.station_id)) {
+      snapshotMap.set(row.station_id, row);
     }
   }
-  return map;
+
+  // Latest real sensor readings per station (real µg/m³ values)
+  // Pick the row with the most non-null pollutant columns among tied timestamps
+  const sensorRows = db
+    .prepare(
+      `SELECT r.*,
+              (CASE WHEN r.pm25 IS NOT NULL THEN 1 ELSE 0 END +
+               CASE WHEN r.pm10 IS NOT NULL THEN 1 ELSE 0 END +
+               CASE WHEN r.no2  IS NOT NULL THEN 1 ELSE 0 END +
+               CASE WHEN r.o3   IS NOT NULL THEN 1 ELSE 0 END +
+               CASE WHEN r.so2  IS NOT NULL THEN 1 ELSE 0 END +
+               CASE WHEN r.co   IS NOT NULL THEN 1 ELSE 0 END) AS data_cols
+       FROM readings r
+       INNER JOIN (
+         SELECT station_id, MAX(measured_at) AS latest
+         FROM readings
+         WHERE sensor_id IS NOT NULL
+         GROUP BY station_id
+       ) best ON r.station_id = best.station_id
+             AND r.measured_at = best.latest
+             AND r.sensor_id IS NOT NULL
+       ORDER BY r.station_id, data_cols DESC`
+    )
+    .all() as (ReadingRow & { data_cols: number })[];
+
+  const sensorMap = new Map<string, ReadingRow>();
+  for (const row of sensorRows) {
+    // Keep only the first (highest data_cols) row per station
+    if (!sensorMap.has(row.station_id)) {
+      sensorMap.set(row.station_id, row);
+    }
+  }
+
+  // Merge: AQI level from snapshot + real pollutant values from sensor harvest
+  const merged = new Map<string, ReadingRow>();
+  const allStationIds = new Set([
+    ...snapshotMap.keys(),
+    ...sensorMap.keys(),
+  ]);
+
+  for (const stationId of allStationIds) {
+    const snap   = snapshotMap.get(stationId);
+    const sensor = sensorMap.get(stationId);
+
+    if (snap && sensor) {
+      // Use snapshot for aqi fields, sensor for pollutant values
+      merged.set(stationId, {
+        ...sensor,
+        aqi_level: snap.aqi_level,
+        aqi_value: snap.aqi_value,
+        measured_at: snap.measured_at, // freshness timestamp from snapshot
+      });
+    } else if (snap) {
+      // Only snapshot — clear the sub-index scores from pm25/pm10 columns
+      // (they are GIOŚ index scores 0–5, not µg/m³)
+      merged.set(stationId, {
+        ...snap,
+        pm25: null,
+        pm10: null,
+        no2: null,
+        o3: null,
+        so2: null,
+        co: null,
+        c6h6: null,
+      });
+    } else if (sensor) {
+      merged.set(stationId, sensor);
+    }
+  }
+
+  void nowStr; // suppress unused var warning
+  return merged;
 }
 
 // ─── Public API (mirrors localData.ts) ────────────────────────────────────────

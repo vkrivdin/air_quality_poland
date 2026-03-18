@@ -74,41 +74,32 @@ export async function GET(): Promise<NextResponse> {
     const Database = (await import("better-sqlite3")).default;
     const db = new Database(DB_PATH, { readonly: true });
 
-    // Latest readings in the past 3 hours
-    const cutoff = new Date(Date.now() - 3 * 3600 * 1000).toISOString();
-    const rows = db
-      .prepare(
-        `SELECT s.city, r.aqi_level, r.pm25, r.measured_at
-         FROM readings r
-         JOIN stations s ON r.station_id = s.id
-         WHERE r.measured_at >= ?
-         ORDER BY r.measured_at DESC`
-      )
-      .all(cutoff) as Array<{
-        city: string;
-        aqi_level: string | null;
-        pm25: number | null;
-        measured_at: string;
-      }>;
+    // Strip timezone suffix — stored timestamps are naive (no +00:00)
+    // so ISO strings with timezone offset fail SQLite string comparison
+    const stripTz = (iso: string) => iso.replace(/[+Z].*$/, "");
+    const cutoff3h  = stripTz(new Date(Date.now() - 3  * 3600 * 1000).toISOString());
+    const cutoff24h = stripTz(new Date(Date.now() - 24 * 3600 * 1000).toISOString());
 
+    // Use AQI snapshot rows (sensor_id IS NULL) — they have aqi_level for all stations
+    const queryAqi = `
+      SELECT s.city, r.aqi_level, r.aqi_value, r.measured_at
+      FROM readings r
+      JOIN stations s ON r.station_id = s.id
+      WHERE r.sensor_id IS NULL
+        AND r.measured_at >= ?
+      ORDER BY r.measured_at DESC`;
+
+    type AqiRow = { city: string; aqi_level: string | null; aqi_value: number | null; measured_at: string };
+
+    let rows = db.prepare(queryAqi).all(cutoff3h) as AqiRow[];
     db.close();
 
     if (rows.length === 0) {
-      // No recent data — try last 24h before giving up
+      // No recent AQI snapshot — try last 24h
       const db2 = new Database(DB_PATH, { readonly: true });
-      const cutoff24 = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
-      const rows24 = db2
-        .prepare(
-          `SELECT s.city, r.aqi_level, r.pm25, r.measured_at
-           FROM readings r
-           JOIN stations s ON r.station_id = s.id
-           WHERE r.measured_at >= ?
-           ORDER BY r.measured_at DESC`
-        )
-        .all(cutoff24) as typeof rows;
+      rows = db2.prepare(queryAqi).all(cutoff24h) as AqiRow[];
       db2.close();
-      if (rows24.length === 0) return NextResponse.json(FALLBACK);
-      return buildStory(rows24);
+      if (rows.length === 0) return NextResponse.json(FALLBACK);
     }
 
     return buildStory(rows);
@@ -118,22 +109,19 @@ export async function GET(): Promise<NextResponse> {
 }
 
 function buildStory(
-  rows: Array<{ city: string; aqi_level: string | null; pm25: number | null }>
+  rows: Array<{ city: string; aqi_level: string | null; aqi_value?: number | null }>
 ): NextResponse {
   // Aggregate: worst level per city
-  const byCity = new Map<string, { level: AqiLevelKey; pm25: number }>();
+  const byCity = new Map<string, { level: AqiLevelKey }>();
   for (const r of rows) {
     const key = giosLabelToKey(r.aqi_level);
     const existing = byCity.get(r.city);
     if (!existing || LEVEL_SCORE[key] > LEVEL_SCORE[existing.level]) {
-      byCity.set(r.city, { level: key, pm25: r.pm25 ?? 0 });
+      byCity.set(r.city, { level: key });
     }
   }
 
-  const cities = Array.from(byCity.entries()).map(([city, d]) => ({
-    city,
-    ...d,
-  }));
+  const cities = Array.from(byCity.entries()).map(([city, d]) => ({ city, ...d }));
   const sorted = [...cities].sort(
     (a, b) => LEVEL_SCORE[b.level] - LEVEL_SCORE[a.level]
   );
@@ -145,18 +133,11 @@ function buildStory(
   const sortedScores   = [...nationalScores].sort((a, b) => a - b);
   const medianScore    = sortedScores[Math.floor(sortedScores.length / 2)] ?? 0;
 
-  const WHO_ANNUAL = 5; // µg/m³ WHO annual PM2.5 guideline
-
   // Rule 1: smog alarm
   if (worst?.level === "bardzo_zly") {
-    const x = Math.max(1, Math.round((worst.pm25 ?? 0) / WHO_ANNUAL));
     const result: StoryResult = {
-      sentence_pl: truncate(
-        `Alarm smogowy w ${worst.city}. PM2.5 przekracza normę WHO ${x}-krotnie.`
-      ),
-      sentence_en: truncate(
-        `Smog alert in ${worst.city}. PM2.5 is ${x}× above the WHO guideline.`
-      ),
+      sentence_pl: truncate(`Alarm smogowy w ${worst.city}. Ogranicz aktywność na zewnątrz.`),
+      sentence_en: truncate(`Smog alert in ${worst.city}. Avoid outdoor activity.`),
       level: "bardzo_zly",
       city: worst.city,
     };
