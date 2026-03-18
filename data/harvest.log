@@ -1,0 +1,796 @@
+[2026-03-17T20:47:19+00:00] [harvest-stations] START
+[2026-03-17T20:47:19+00:00] [1/2] Fetching station list from GIOŚ...
+[2026-03-17T20:47:19+00:00]   Got 289 stations.
+[2026-03-17T20:47:19+00:00] [2/2] Upserting stations into local.db...
+[2026-03-17T20:47:19+00:00]   ✓ 289 stations upserted.
+[2026-03-17T20:47:19+00:00] [harvest-stations] DONE
+[2026-03-17T20:47:27+00:00] [harvest-sensors] START — 0 stations to process (city=Kraków)
+[2026-03-17T20:47:27+00:00]   Nothing to do — all stations already have sensor data.
+[2026-03-17T20:47:35+00:00] [harvest-sensors] START — 270 stations to process
+[2026-03-17T20:47:35+00:00]   [1/270] Bielsko-Biała — Bielsko-Biała, ul. Partyzantów (gios_id=10158)
+[2026-03-17T20:47:35+00:00]     → 5 sensors added (total so far: 5)
+[2026-03-17T20:48:06+00:00]   [2/270] Bielsko-Biała — Bielsko-Biała, ul. Sternicza (gios_id=791)
+[2026-03-17T20:48:06+00:00]     → 1 sensors added (total so far: 6)
+[2026-03-17T20:48:37+00:00]   [3/270] Bochnia — Bochnia, ul. Konfederatów Barskich (gios_id=391)
+[2026-03-17T20:48:38+00:00]     → 3 sensors added (total so far: 9)
+[2026-03-17T20:49:09+00:00]   [4/270] Borsukowizna — Borsukowizna, Szkółka Leśna (gios_id=612)
+[2026-03-17T20:49:09+00:00]     → 7 sensors added (total so far: 16)
+[2026-03-17T20:49:40+00:00]   [5/270] Borówiec — Borówiec, ul. Drapałka (gios_id=950)
+[2026-03-17T20:49:40+00:00]     → 5 sensors added (total so far: 21)
+[2026-03-17T20:50:11+00:00]   [6/270] Braniewo — Braniewo, ul. PCK (gios_id=20647)
+[2026-03-17T20:50:11+00:00]     → 4 sensors added (total so far: 25)
+[2026-03-17T20:50:42+00:00]   [7/270] Brodnica — Brodnica, ul. Kochanowskiego (gios_id=9203)
+[2026-03-17T20:50:42+00:00]     → 2 sensors added (total so far: 27)
+[2026-03-17T20:51:13+00:00]   [8/270] Brzeg — Brzeg, ul. Poprzeczna (gios_id=16413)
+[2026-03-17T20:51:13+00:00]     → 4 sensors added (total so far: 31)
+[2026-03-17T20:51:44+00:00]   [9/270] Brzeziny — Brzeziny, ul. Reformacka (gios_id=289)
+[2026-03-17T20:51:44+00:00]     → 2 sensors added (total so far: 33)
+[2026-03-17T20:52:15+00:00]   [10/270] Busko-Zdrój — Busko-Zdrój, ul. Rokosza (gios_id=756)
+[2026-03-17T20:52:16+00:00]     → 3 sensors added (total so far: 36)
+[2026-03-17T20:52:47+00:00]   [11/270] Bydgoszcz — Bydgoszcz, Pl. Poznański (gios_id=156)
+[2026-03-17T20:52:47+00:00]     → 7 sensors added (total so far: 43)
+[2026-03-17T20:53:18+00:00]   [12/270] Bydgoszcz — Bydgoszcz, ul. Fieldorfa (gios_id=150)
+[2026-03-17T20:53:18+00:00]     → 1 sensors added (total so far: 44)
+[2026-03-17T20:53:49+00:00]   [13/270] Bydgoszcz — Bydgoszcz, ul. Jeździecka (gios_id=11576)
+[2026-03-17T20:53:49+00:00]     → 4 sensors added (total so far: 48)
+[2026-03-17T20:54:20+00:00]   [14/270] Bydgoszcz — Bydgoszcz, ul. Warszawska (gios_id=158)
+[2026-03-17T20:54:20+00:00]     → 13 sensors added (total so far: 61)
+[2026-03-17T20:54:51+00:00]   [15/270] Chełm — Chełm, ul. Połaniecka (gios_id=11360)
+[2026-03-17T20:54:52+00:00]     → 14 sensors added (total so far: 75)
+[2026-03-17T20:55:23+00:00]   [16/270] Ciechanów — Ciechanów, ul. Kraszewskiego (gios_id=20209)
+[2026-03-17T20:55:23+00:00]     → 4 sensors added (total so far: 79)
+[2026-03-17T20:55:54+00:00]   [17/270] Ciechocinek — Ciechocinek, ul. Tężniowa (gios_id=164)
+[2026-03-17T20:55:54+00:00]     → 6 sensors added (total so far: 85)
+[2026-03-17T20:56:25+00:00]   [18/270] Cieszyn — Cieszyn, ul. Chopina (gios_id=16406)
+[2026-03-17T20:56:25+00:00]     → 1 sensors added (total so far: 86)
+[2026-03-17T20:56:56+00:00]   [19/270] Czerniawa — Czerniawa (gios_id=11)
+[2026-03-17T20:56:56+00:00]     → 5 sensors added (total so far: 91)
+[2026-03-17T20:57:27+00:00]   [20/270] Czerwionka-Leszczyny — Czerwionka-Leszczyny, ul. Kopalniana (gios_id=9000)
+[2026-03-17T20:57:27+00:00]     → 1 sensors added (total so far: 92)
+[2026-03-17T20:57:58+00:00]   [21/270] Częstochowa — Częstochowa, Al. AK/Jana Pawła II (gios_id=798)
+[2026-03-17T20:57:59+00:00]     → 5 sensors added (total so far: 97)
+[2026-03-17T20:58:30+00:00]   [22/270] Częstochowa — Częstochowa, ul. Baczyńskiego (gios_id=800)
+[2026-03-17T20:58:30+00:00]     → 12 sensors added (total so far: 109)
+[2026-03-17T20:59:01+00:00]   [23/270] Częstochowa — Częstochowa, ul. Zana (gios_id=804)
+[2026-03-17T20:59:01+00:00]     → 1 sensors added (total so far: 110)
+[2026-03-17T20:59:32+00:00]   [24/270] Diabla Góra — Diabla Góra, Puszcza Borecka (gios_id=882)
+[2026-03-17T20:59:32+00:00]     → 20 sensors added (total so far: 130)
+[2026-03-17T21:00:04+00:00]   [25/270] Duszniki-Zdrój — Duszniki-Zdrój, ul. Sportowa (gios_id=10093)
+[2026-03-17T21:00:04+00:00]     → 4 sensors added (total so far: 134)
+[2026-03-17T21:05:08+00:00]   [26/270] Dzierżoniów — Dzierżoniów, ul. Piłsudskiego (gios_id=16)
+[2026-03-17T21:05:08+00:00]     → 1 sensors added (total so far: 135)
+[2026-03-17T21:05:39+00:00]   [27/270] Dąbrowa Górnicza — Dąbrowa Górnicza, ul. Tysiąclecia (gios_id=805)
+[2026-03-17T21:05:40+00:00]     → 14 sensors added (total so far: 149)
+[2026-03-17T21:06:11+00:00]   [28/270] Dębica — Dębica, ul.Grottgera (gios_id=9173)
+[2026-03-17T21:06:11+00:00]     → 4 sensors added (total so far: 153)
+[2026-03-17T21:06:42+00:00]   [29/270] Elbląg — Elbląg, ul. Bażyńskiego (gios_id=861)
+[2026-03-17T21:06:43+00:00]     → 20 sensors added (total so far: 173)
+[2026-03-17T21:07:14+00:00]   [30/270] Ełk — Ełk, ul. Piłsudskiego (gios_id=10005)
+[2026-03-17T21:07:14+00:00]     → 9 sensors added (total so far: 182)
+[2026-03-17T21:07:45+00:00]   [31/270] Florianka — Florianka, RPN (gios_id=10874)
+[2026-03-17T21:07:45+00:00]     → 6 sensors added (total so far: 188)
+[2026-03-17T21:08:16+00:00]   [32/270] Gajew — Gajew, Ujęcie Wody (gios_id=291)
+[2026-03-17T21:08:16+00:00]     → 6 sensors added (total so far: 194)
+[2026-03-17T21:08:47+00:00]   [33/270] Gdańsk — Gdańsk, Al. Grunwaldzka (gios_id=16180)
+[2026-03-17T21:08:47+00:00]     → 7 sensors added (total so far: 201)
+[2026-03-17T21:09:18+00:00]   [34/270] Gdańsk — Gdańsk, ul. Lawendowe Wzgórze (gios_id=20347)
+[2026-03-17T21:09:19+00:00]     → 8 sensors added (total so far: 209)
+[2026-03-17T21:09:50+00:00]   [35/270] Gdańsk — Gdańsk, ul. Leczkowa (gios_id=736)
+[2026-03-17T21:09:50+00:00]     → 20 sensors added (total so far: 229)
+[2026-03-17T21:10:21+00:00]   [36/270] Gdańsk — Gdańsk, ul. Powstańców Warszawskich (gios_id=729)
+[2026-03-17T21:10:21+00:00]     → 7 sensors added (total so far: 236)
+[2026-03-17T21:10:52+00:00]   [37/270] Gdańsk — Gdańsk, ul. Powstańców Wielkopolskich (gios_id=706)
+[2026-03-17T21:10:53+00:00]     → 1 sensors added (total so far: 237)
+[2026-03-17T21:11:24+00:00]   [38/270] Gdańsk — Gdańsk, ul. Wyzwolenia (gios_id=731)
+[2026-03-17T21:11:24+00:00]     → 7 sensors added (total so far: 244)
+[2026-03-17T21:11:55+00:00]   [39/270] Gdynia — Gdynia, ul. Porębskiego (gios_id=732)
+[2026-03-17T21:11:55+00:00]     → 8 sensors added (total so far: 252)
+[2026-03-17T21:12:26+00:00]   [40/270] Gliwice — Gliwice, ul. Mewy (gios_id=809)
+[2026-03-17T21:12:26+00:00]     → 2 sensors added (total so far: 254)
+[2026-03-17T21:12:57+00:00]   [41/270] Gniezno — Gniezno, ul. Paczkowskiego (gios_id=890)
+[2026-03-17T21:12:57+00:00]     → 2 sensors added (total so far: 256)
+[2026-03-17T21:13:28+00:00]   [42/270] Goczałkowice-Zdrój — Goczałkowice-Zdrój, ul. Parkowa (gios_id=11457)
+[2026-03-17T21:13:28+00:00]     → 7 sensors added (total so far: 263)
+[2026-03-17T21:13:59+00:00]   [43/270] Godów — Godów, ul. Gliniki (gios_id=810)
+[2026-03-17T21:13:59+00:00]     → 17 sensors added (total so far: 280)
+[2026-03-17T21:14:30+00:00]   [44/270] Gorlice — Gorlice, ul. Krasińskiego (gios_id=398)
+[2026-03-17T21:14:31+00:00]     → 2 sensors added (total so far: 282)
+[2026-03-17T21:15:02+00:00]   [45/270] Gorzów Wielkopolski — Gorzów Wlkp. ul. Kosynierów Gdyńskich (gios_id=361)
+[2026-03-17T21:15:02+00:00]     → 14 sensors added (total so far: 296)
+[2026-03-17T21:15:33+00:00]   [46/270] Gorzów Wielkopolski — Gorzów Wlkp. ul. Piłsudskiego (gios_id=362)
+[2026-03-17T21:15:34+00:00]     → 3 sensors added (total so far: 299)
+[2026-03-17T21:16:05+00:00]   [47/270] Gołdap — Gołdap, ul. Jaćwieska (gios_id=870)
+[2026-03-17T21:16:05+00:00]     → 3 sensors added (total so far: 302)
+[2026-03-17T21:23:07+00:00]   [48/270] Gołuchów — Gołuchów, Ujęcie Wody (gios_id=11754)
+[2026-03-17T21:23:07+00:00]     → 6 sensors added (total so far: 308)
+[2026-03-17T21:23:38+00:00]   [49/270] Granica — Granica, KPN (gios_id=466)
+[2026-03-17T21:23:38+00:00]     → 6 sensors added (total so far: 314)
+[2026-03-17T21:24:09+00:00]   [50/270] Grudziądz — Grudziądz, ul. Piłsudskiego (gios_id=142)
+[2026-03-17T21:24:09+00:00]     → 4 sensors added (total so far: 318)
+[2026-03-17T21:24:40+00:00]   [51/270] Grudziądz — Grudziądz, ul. Sienkiewicza (gios_id=183)
+[2026-03-17T21:24:40+00:00]     → 3 sensors added (total so far: 321)
+[2026-03-17T21:25:11+00:00]   [52/270] Guty Duże — Guty Duże (gios_id=9913)
+[2026-03-17T21:25:11+00:00]     → 7 sensors added (total so far: 328)
+[2026-03-17T21:25:42+00:00]   [53/270] Głogów — Głogów, ul. Wita Stwosza (gios_id=9177)
+[2026-03-17T21:25:43+00:00]     → 6 sensors added (total so far: 334)
+[2026-03-17T21:26:14+00:00]   [54/270] Głubczyce — Głubczyce, ul. Ratuszowa (gios_id=10018)
+[2026-03-17T21:26:14+00:00]     → 6 sensors added (total so far: 340)
+[2026-03-17T21:26:45+00:00]   [55/270] Inowrocław — Inowrocław, ul. Solankowa (gios_id=143)
+[2026-03-17T21:26:45+00:00]     → 3 sensors added (total so far: 343)
+[2026-03-17T21:27:16+00:00]   [56/270] Iwonicz-Zdrój — Iwonicz Zdrój, ul. Rąba (gios_id=10122)
+[2026-03-17T21:27:16+00:00]     → 2 sensors added (total so far: 345)
+[2026-03-17T21:27:47+00:00]   [57/270] Iława — Iława, ul.Andersa (gios_id=8953)
+[2026-03-17T21:27:47+00:00]     → 2 sensors added (total so far: 347)
+[2026-03-17T21:28:18+00:00]   [58/270] Jarczew — Jarczew, IMGW (gios_id=248)
+[2026-03-17T21:28:18+00:00]     → 3 sensors added (total so far: 350)
+[2026-03-17T21:28:49+00:00]   [59/270] Jarosław — Jarosław, ul. Pruchnicka (gios_id=631)
+[2026-03-17T21:28:50+00:00]     → 4 sensors added (total so far: 354)
+[2026-03-17T21:29:21+00:00]   [60/270] Jastrzębie-Zdrój — Jastrzębie-Zdrój, Al. J.Piłsudskiego/Harcerska (gios_id=11855)
+[2026-03-17T21:29:21+00:00]     → 5 sensors added (total so far: 359)
+[2026-03-17T21:29:52+00:00]   [61/270] Jasło — Jaslo, ul. Sikorskiego (gios_id=638)
+[2026-03-17T21:29:52+00:00]     → 8 sensors added (total so far: 367)
+[2026-03-17T21:30:23+00:00]   [62/270] Jelenia Góra — Jelenia Góra, ul. Ogińskiego (gios_id=9153)
+[2026-03-17T21:30:35+00:00]     → 9 sensors added (total so far: 376)
+[2026-03-17T21:31:06+00:00]   [63/270] Jelenia Góra — Jelenia Góra, ul. Sokoliki (gios_id=8873)
+[2026-03-17T21:31:07+00:00]     → 2 sensors added (total so far: 378)
+[2026-03-17T21:31:38+00:00]   [64/270] Kalisz — Kalisz, ul. Wyszyńskiego (gios_id=952)
+[2026-03-17T21:31:38+00:00]     → 15 sensors added (total so far: 393)
+[2026-03-17T21:32:09+00:00]   [65/270] Kaszów — Kaszów (gios_id=10119)
+[2026-03-17T21:32:09+00:00]     → 4 sensors added (total so far: 397)
+[2026-03-17T21:32:40+00:00]   [66/270] Katowice — Katowice, ul. Dudy-Gracza (gios_id=17318)
+[2026-03-17T21:32:40+00:00]     → 6 sensors added (total so far: 403)
+[2026-03-17T21:33:40+00:00]   [67/270] Katowice — Katowice, ul. Kossutha (gios_id=814)
+[2026-03-17T21:33:40+00:00]     → 20 sensors added (total so far: 423)
+[2026-03-17T21:34:11+00:00]   [68/270] Kielce — Kielce, ul. Jurajska (gios_id=16497)
+[2026-03-17T21:37:39+00:00]   ERROR fetching https://api.gios.gov.pl/pjp-api/v1/rest/station/sensors/16497: The read operation timed out
+[2026-03-17T21:38:10+00:00]   [69/270] Kielce — Kielce, ul. Targowa (gios_id=11195)
+[2026-03-17T21:38:10+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T21:38:41+00:00]   [70/270] Kielce — Kielce, ul. Warszawska 108 (gios_id=16196)
+[2026-03-17T21:38:41+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T21:39:12+00:00]   [71/270] Kielce — Kielce, ul. Warszawska 210 (gios_id=9973)
+[2026-03-17T21:39:12+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T21:39:43+00:00]   [72/270] Kluczbork — Kluczbork, ul. Mickiewicza (gios_id=577)
+[2026-03-17T21:39:43+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T21:40:14+00:00]   [73/270] Knurów — Knurów, ul. Jedności Narodowej (gios_id=818)
+[2026-03-17T21:40:14+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T21:40:45+00:00]   [74/270] Kobierzyce — ul. Sportowa 15 (gios_id=20590)
+[2026-03-17T21:40:46+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T21:41:17+00:00]   [75/270] Koniczynka — Koniczynka, Pojezierze Chełmińskie (gios_id=190)
+[2026-03-17T21:41:17+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T21:41:48+00:00]   [76/270] Konin — Konin, ul. Wyszyńskiego (gios_id=902)
+[2026-03-17T21:41:49+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T21:42:20+00:00]   [77/270] Konstancin-Jeziorna — Konstancin-Jeziorna, ul. Żeromskiego (gios_id=16271)
+[2026-03-17T21:42:20+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T21:42:51+00:00]   [78/270] Koszalin — Koszalin, Al. Armii Krajowej (gios_id=966)
+[2026-03-17T21:42:51+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T21:43:22+00:00]   [79/270] Koszalin — Koszalin, ul. Chopina (gios_id=11336)
+[2026-03-17T21:43:23+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T21:43:54+00:00]   [80/270] Koszalin — Koszalin, ul. Spasowskiego (gios_id=967)
+[2026-03-17T21:43:54+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T21:44:25+00:00]   [81/270] Koziegłowy — Koziegłowy, Os. Leśne (gios_id=10834)
+[2026-03-17T21:44:26+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T21:44:57+00:00]   [82/270] Kołobrzeg — Kołobrzeg, ul. Żółkiewskiego (gios_id=10934)
+[2026-03-17T21:44:57+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T21:45:28+00:00]   [83/270] Kościerzyna — Kościerzyna, ul. Targowa (gios_id=740)
+[2026-03-17T21:45:28+00:00]   ERROR fetching https://api.gios.gov.pl/pjp-api/v1/rest/station/sensors/740: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1081)>
+[2026-03-17T21:45:59+00:00]   [84/270] Krapkowice — Krapkowice, ul. 3 Maja (gios_id=16913)
+[2026-03-17T21:45:59+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T21:46:30+00:00]   [85/270] Krasne — Krasne (gios_id=20202)
+[2026-03-17T21:46:30+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T21:47:01+00:00]   [86/270] Krasnobród — Krasnobród, ul. Sanatoryjna (gios_id=12098)
+[2026-03-17T21:47:01+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T21:47:32+00:00]   [87/270] Kraśnik — Kraśnik, ul. Koszarowa (gios_id=250)
+[2026-03-17T21:47:32+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T21:48:04+00:00]   [88/270] Krempna — Krempna, Ośrodek edukacyjno-muzealny MPN (gios_id=9175)
+[2026-03-17T21:48:05+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:00:18+00:00]   [89/270] Krosno — Krosno, ul. Kletówki (gios_id=646)
+[2026-03-17T22:00:18+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:00:49+00:00]   [90/270] Krotoszyn — Krotoszyn, ul. Olimpijska (gios_id=20307)
+[2026-03-17T22:00:50+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:02:28+00:00]   [91/270] Krzyżówka — Piaski, Krzyżówka (gios_id=946)
+[2026-03-17T22:02:29+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:03:12+00:00]   [92/270] Kwidzyn — Kwidzyn, ul. Sportowa (gios_id=747)
+[2026-03-17T22:03:12+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:03:43+00:00]   [93/270] Kędzierzyn-Koźle — Kędzierzyn-Koźle, ul. Śmiałego (gios_id=568)
+[2026-03-17T22:03:43+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:19:13+00:00]   [94/270] Kępno — Kępno ul. Sportowa (gios_id=17659)
+[2026-03-17T22:19:13+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:34:43+00:00]   [95/270] Kłodzko — Kłodzko, ul. Szkolna (gios_id=38)
+[2026-03-17T22:34:43+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:35:14+00:00]   [96/270] Legionowo — Legionowo, ul. Zegrzyńska (gios_id=471)
+[2026-03-17T22:35:14+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:44:58+00:00]   [97/270] Legnica — Legnica, Al. Rzeczypospolitej (gios_id=52)
+[2026-03-17T22:44:59+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:45:30+00:00]   [98/270] Legnica — Legnica, ul. Polarna (gios_id=11234)
+[2026-03-17T22:45:30+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:46:01+00:00]   [99/270] Leszno — Leszno, ul. Bolesława Prusa (gios_id=17698)
+[2026-03-17T22:46:01+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:46:32+00:00]   [100/270] Liniewko Kościerskie — Liniewko Kościerskie (gios_id=743)
+[2026-03-17T22:46:32+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:47:03+00:00]   [101/270] Lubań — Lubań, ul. Ludowa (gios_id=20468)
+[2026-03-17T22:47:03+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:47:34+00:00]   [102/270] Lublin — Lublin, ul. Obywatelska (gios_id=266)
+[2026-03-17T22:47:34+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:48:05+00:00]   [103/270] Lublin — Lublin, ul. Okopowa (gios_id=12096)
+[2026-03-17T22:48:05+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:48:37+00:00]   [104/270] Lublin — Lublin, ul. Śliwińskiego (gios_id=258)
+[2026-03-17T22:48:37+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:49:08+00:00]   [105/270] Lubliniec — Lubliniec, ul. ks. Szymały (gios_id=11278)
+[2026-03-17T22:49:08+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:49:39+00:00]   [106/270] Lębork — Lębork, ul. Malczewskiego (gios_id=742)
+[2026-03-17T22:49:39+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:50:10+00:00]   [107/270] Malbork — Malbork, ul. Mickiewicza (gios_id=741)
+[2026-03-17T22:50:10+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:50:41+00:00]   [108/270] Małogoszcz — Małogoszcz, ul. Słoneczna (gios_id=10794)
+[2026-03-17T22:50:41+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:51:12+00:00]   [109/270] Mielec — Mielec, ul. Biernackiego (gios_id=10438)
+[2026-03-17T22:51:13+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:51:44+00:00]   [110/270] Mielec — Mielec, ul. Pogodna (gios_id=10115)
+[2026-03-17T22:51:44+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:52:15+00:00]   [111/270] Mosina — Mosina, ul. Czereśniowa (gios_id=16495)
+[2026-03-17T22:52:20+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:58:21+00:00]   [112/270] Myszków — Myszków, ul. Miedziana (gios_id=825)
+[2026-03-17T22:58:21+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:58:52+00:00]   [113/270] Myślenice — Myślenice (gios_id=16753)
+[2026-03-17T22:58:52+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:59:23+00:00]   [114/270] Myślibórz — Myślibórz, ul. Za Bramką (gios_id=973)
+[2026-03-17T22:59:23+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T22:59:54+00:00]   [115/270] Nakło nad Notecią — Nakło nad Notecią, ul. Św. Wawrzyńca (gios_id=9798)
+[2026-03-17T22:59:55+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:00:26+00:00]   [116/270] Nałęczów — Nałęczów, Al. Małachowskiego (gios_id=11362)
+[2026-03-17T23:00:26+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:00:57+00:00]   [117/270] Nidzica — Nidzica, ul.Traugutta (gios_id=875)
+[2026-03-17T23:00:57+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:01:28+00:00]   [118/270] Niepołomice — Niepołomice, ul. 3 Maja (gios_id=455)
+[2026-03-17T23:01:28+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:01:59+00:00]   [119/270] Nisko — Nisko, ul. Szklarniowa (gios_id=659)
+[2026-03-17T23:01:59+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:02:30+00:00]   [120/270] Nowa Ruda — Nowa Ruda, ul. Jeziorna (gios_id=11254)
+[2026-03-17T23:02:33+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:03:04+00:00]   [121/270] Nowa Sól — Nowa Sól (gios_id=16613)
+[2026-03-17T23:03:04+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:03:35+00:00]   [122/270] Nowe Miasto Lubawskie — Nowe Miasto Lubawskie, ul. Działyńskich (gios_id=12050)
+[2026-03-17T23:03:36+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:04:07+00:00]   [123/270] Nowiny — Nowiny, ul. Parkowa (gios_id=769)
+[2026-03-17T23:04:07+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:04:38+00:00]   [124/270] Nowy Sącz — Nowy Sącz, ul. Nadbrzeżna (gios_id=426)
+[2026-03-17T23:04:38+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:05:09+00:00]   [125/270] Nowy Targ — Nowy Targ, Al. Tysiąclecia (gios_id=16894)
+[2026-03-17T23:05:09+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:05:40+00:00]   [126/270] Nowy Tomyśl — Nowy Tomyśl, ul. Sienkiewicza (gios_id=912)
+[2026-03-17T23:05:40+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:06:11+00:00]   [127/270] Nysa — Nysa, ul. Rodziewiczówny 1 (gios_id=20387)
+[2026-03-17T23:06:11+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:06:42+00:00]   [128/270] Olesno — Olesno, ul. Słowackiego (gios_id=584)
+[2026-03-17T23:06:42+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:07:13+00:00]   [129/270] Oleśnica — Oleśnica, ul. Brzozowa (gios_id=71)
+[2026-03-17T23:07:14+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:07:45+00:00]   [130/270] Olkusz — Olkusz, ul. Cegielniana (gios_id=11301)
+[2026-03-17T23:07:45+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:08:16+00:00]   [131/270] Olsztyn — Olsztyn, ul. Puszkina (gios_id=877)
+[2026-03-17T23:08:16+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:08:47+00:00]   [132/270] Opatów — Opatów, ul. Partyzantów (gios_id=12139)
+[2026-03-17T23:08:47+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:09:18+00:00]   [133/270] Opoczno — Opoczno, ul. Skłodowskiej-Curie (gios_id=10456)
+[2026-03-17T23:09:18+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:09:49+00:00]   [134/270] Opole — Opole, Os. Armii Krajowej (gios_id=590)
+[2026-03-17T23:09:50+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:10:21+00:00]   [135/270] Opole — Opole, ul. Koszyka (gios_id=10374)
+[2026-03-17T23:10:21+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:10:52+00:00]   [136/270] Osieczów — Osieczów (gios_id=74)
+[2026-03-17T23:10:52+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:11:23+00:00]   [137/270] Ostrowiec Świętokrzyski — Ostrowiec Świętokrzyski, ul. Polna (gios_id=20567)
+[2026-03-17T23:11:23+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:11:54+00:00]   [138/270] Ostrołęka — Ostrołęka, ul. Hallera (gios_id=9114)
+[2026-03-17T23:11:54+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:12:25+00:00]   [139/270] Ostróda — Ostróda, ul. Piłsudskiego (gios_id=10030)
+[2026-03-17T23:12:25+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:12:56+00:00]   [140/270] Otwock — Otwock, ul. Brzozowa (gios_id=485)
+[2026-03-17T23:12:57+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:13:28+00:00]   [141/270] Oława — Oława, ul. Żołnierzy Armii Krajowej (gios_id=70)
+[2026-03-17T23:13:28+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:13:37+00:00] [harvest-aqi-snapshot] START — 289 stations
+[2026-03-17T23:13:52+00:00]   [50/289] inserted=50 skipped=0 errors=0
+[2026-03-17T23:13:59+00:00]   [142/270] Oświęcim — Oświęcim, ul. J. Bema (gios_id=10814)
+[2026-03-17T23:14:04+00:00]     ⚠ insert error: database is locked
+[2026-03-17T23:14:09+00:00]     ⚠ insert error: database is locked
+[2026-03-17T23:14:12+00:00]   [100/289] inserted=100 skipped=0 errors=0
+[2026-03-17T23:14:14+00:00]     ⚠ insert error: database is locked
+[2026-03-17T23:14:20+00:00]     ⚠ insert error: database is locked
+[2026-03-17T23:14:25+00:00]     ⚠ insert error: database is locked
+[2026-03-17T23:14:26+00:00]   [150/289] inserted=150 skipped=0 errors=0
+[2026-03-17T23:14:30+00:00]     ⚠ insert error: database is locked
+[2026-03-17T23:14:35+00:00]     ⚠ insert error: database is locked
+[2026-03-17T23:14:40+00:00]     ⚠ insert error: database is locked
+[2026-03-17T23:14:40+00:00]     → 0 sensors added (total so far: 423)
+[2026-03-17T23:14:41+00:00]   [200/289] inserted=200 skipped=0 errors=0
+[2026-03-17T23:14:56+00:00]   [250/289] inserted=250 skipped=0 errors=0
+[2026-03-17T23:15:07+00:00]   [289/289] inserted=289 skipped=0 errors=0
+[2026-03-17T23:15:07+00:00] [harvest-aqi-snapshot] DONE — inserted=289 skipped=0 errors=0
+[2026-03-17T23:15:11+00:00]   [143/270] Ożarów — Ożarów, Os. Wzgórze (gios_id=777)
+[2026-03-17T23:15:11+00:00]     → 1 sensors added (total so far: 424)
+[2026-03-17T23:15:42+00:00]   [144/270] Pabianice — Pabianice, ul. Konstantynowska (gios_id=314)
+[2026-03-17T23:15:43+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:16:14+00:00]   [145/270] Parzniewice — Parzniewice, Ujęcie Wody (gios_id=319)
+[2026-03-17T23:16:14+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:16:45+00:00]   [146/270] Piastów — Piastów, ul. Pułaskiego (gios_id=488)
+[2026-03-17T23:16:45+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:17:13+00:00] [harvest-readings] START — 56 sensors to fetch (city=Kraków)
+[2026-03-17T23:17:13+00:00]   [1/56] sensor 16370 — Kraków / Kraków, ul. Złoty Róg / pył zawieszony PM10 → col=pm10
+[2026-03-17T23:17:14+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/16370 → HTTP Error 400: 
+[2026-03-17T23:17:16+00:00]   [147/270] Piotrków Trybunalski — Piotrków Trybunalski, ul. Krakowskie Przedmieście (gios_id=322)
+[2026-03-17T23:17:16+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:17:45+00:00]   [2/56] sensor 16786 — Kraków / Kraków, ul. Złoty Róg / pył zawieszony PM10 → col=pm10
+[2026-03-17T23:17:45+00:00]     → 18 rows inserted (oldest=2026-03-17T05:00:00, total=18)
+[2026-03-17T23:17:47+00:00]   [148/270] Piła — Pila, ul. Kusocińskiego (gios_id=920)
+[2026-03-17T23:17:47+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:18:16+00:00]   [3/56] sensor 17245 — Kraków / Kraków, ul. Złoty Róg / benzo(a)piren w PM10 → col=pm10
+[2026-03-17T23:18:16+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/17245 → HTTP Error 400: 
+[2026-03-17T23:18:18+00:00]   [149/270] Pleszew — Pleszew, Al. Mickiewicza (gios_id=9218)
+[2026-03-17T23:18:19+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:18:47+00:00]   [4/56] sensor 16368 — Kraków / Kraków, Os. Piastów / pył zawieszony PM10 → col=pm10
+[2026-03-17T23:18:47+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/16368 → HTTP Error 400: 
+[2026-03-17T23:18:50+00:00]   [150/270] Polkowice — Polkowice, ul. Kasztanowa (gios_id=77)
+[2026-03-17T23:18:50+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:19:18+00:00]   [5/56] sensor 16784 — Kraków / Kraków, Os. Piastów / pył zawieszony PM10 → col=pm10
+[2026-03-17T23:19:18+00:00]     → 17 rows inserted (oldest=2026-03-17T05:00:00, total=35)
+[2026-03-17T23:19:21+00:00]   [151/270] Poznań — Poznan, ul. Hetmańska (gios_id=10148)
+[2026-03-17T23:19:21+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:19:49+00:00]   [6/56] sensor 17244 — Kraków / Kraków, Os. Piastów / benzo(a)piren w PM10 → col=pm10
+[2026-03-17T23:19:49+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/17244 → HTTP Error 400: 
+[2026-03-17T23:19:52+00:00]   [152/270] Poznań — Poznań ul. Szwajcarska (gios_id=16493)
+[2026-03-17T23:19:52+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:20:20+00:00]   [7/56] sensor 17309 — Kraków / Kraków, Os. Wadów / pył zawieszony PM10 → col=pm10
+[2026-03-17T23:20:20+00:00]     → 18 rows inserted (oldest=2026-03-17T05:00:00, total=53)
+[2026-03-17T23:20:23+00:00]   [153/270] Poznań — Poznań, ul. Dąbrowskiego (gios_id=944)
+[2026-03-17T23:20:23+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:20:51+00:00]   [8/56] sensor 17310 — Kraków / Kraków, Os. Wadów / pył zawieszony PM10 → col=pm10
+[2026-03-17T23:20:51+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/17310 → HTTP Error 400: 
+[2026-03-17T23:20:54+00:00]   [154/270] Poznań — Poznań, ul. Spychalskiego (gios_id=931)
+[2026-03-17T23:20:54+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:21:22+00:00]   [9/56] sensor 17311 — Kraków / Kraków, Os. Wadów / benzo(a)piren w PM10 → col=pm10
+[2026-03-17T23:21:23+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/17311 → HTTP Error 400: 
+[2026-03-17T23:21:25+00:00]   [155/270] Poznań — Poznań, ul. Szymanowskiego (gios_id=932)
+[2026-03-17T23:21:26+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:21:54+00:00]   [10/56] sensor 20319 — Kraków / Kraków, Os. Swoszowice / benzo(a)piren w PM10 → col=pm10
+[2026-03-17T23:21:54+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/20319 → HTTP Error 400: 
+[2026-03-17T23:21:57+00:00]   [156/270] Połaniec — Połaniec, ul. Ruszczańska (gios_id=778)
+[2026-03-17T23:21:57+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:22:25+00:00]   [11/56] sensor 20320 — Kraków / Kraków, Os. Swoszowice / pył zawieszony PM10 → col=pm10
+[2026-03-17T23:22:26+00:00]     → 19 rows inserted (oldest=2026-03-17T05:00:00, total=72)
+[2026-03-17T23:22:28+00:00]   [157/270] Połczyn-Zdrój — Połczyn-Zdrój, ul. Solankowa (gios_id=16157)
+[2026-03-17T23:22:29+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:22:57+00:00]   [12/56] sensor 20321 — Kraków / Kraków, Os. Swoszowice / pył zawieszony PM10 → col=pm10
+[2026-03-17T23:22:57+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/20321 → HTTP Error 400: 
+[2026-03-17T23:23:00+00:00]   [158/270] Przemyśl — Przemyśl, ul. Grunwaldzka (gios_id=665)
+[2026-03-17T23:23:01+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:23:28+00:00]   [13/56] sensor 27841 — Kraków / Kraków, ul. Kamieńskiego / pył zawieszony PM10 → col=pm10
+[2026-03-17T23:23:28+00:00]     → 19 rows inserted (oldest=2026-03-17T05:00:00, total=91)
+[2026-03-17T23:23:32+00:00]   [159/270] Pszczyna — Pszczyna, ul. Batorego (gios_id=17058)
+[2026-03-17T23:23:32+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:23:59+00:00]   [14/56] sensor 27842 — Kraków / Kraków, ul. Kamieńskiego / tlenek azotu → col=None
+[2026-03-17T23:23:59+00:00]     → 19 rows inserted (oldest=2026-03-17T05:00:00, total=110)
+[2026-03-17T23:24:03+00:00]   [160/270] Płock — Płock, ul. Królowej Jadwigi (gios_id=497)
+[2026-03-17T23:24:03+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:24:30+00:00]   [15/56] sensor 27843 — Kraków / Kraków, ul. Kamieńskiego / dwutlenek azotu → col=no2
+[2026-03-17T23:24:30+00:00]     → 19 rows inserted (oldest=2026-03-17T05:00:00, total=129)
+[2026-03-17T23:24:34+00:00]   [161/270] Płock — Płock, ul. Reja (gios_id=501)
+[2026-03-17T23:24:34+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:25:01+00:00]   [16/56] sensor 27844 — Kraków / Kraków, ul. Kamieńskiego / tlenki azotu → col=None
+[2026-03-17T23:25:01+00:00]     → 19 rows inserted (oldest=2026-03-17T05:00:00, total=148)
+[2026-03-17T23:25:05+00:00]   [162/270] Rabka-Zdrój — Rabka-Zdrój, ul. Orkana (gios_id=10446)
+[2026-03-17T23:25:05+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:25:32+00:00]   [17/56] sensor 31625 — Kraków / Kraków, ul. Półłanki / ozon → col=o3
+[2026-03-17T23:25:33+00:00]     → 20 rows inserted (oldest=2026-03-17T05:00:00, total=168)
+[2026-03-17T23:25:36+00:00]   [163/270] Racibórz — Racibórz, ul. Wojska Polskiego (gios_id=11794)
+[2026-03-17T23:25:36+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:25:50+00:00] [harvest-readings] START — 47 sensors to fetch (city=Kraków) | window=last 7d
+[2026-03-17T23:25:50+00:00]   [1/47] sensor 16370 — Kraków / Kraków, ul. Złoty Róg / pył zawieszony PM10 → col=pm10
+[2026-03-17T23:25:50+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/16370 → HTTP Error 400: 
+[2026-03-17T23:26:04+00:00]   [18/56] sensor 2745 — Kraków / Kraków, Aleja Krasińskiego / tlenek węgla → col=co
+[2026-03-17T23:26:04+00:00]     → 20 rows inserted (oldest=2026-03-17T05:00:00, total=188)
+[2026-03-17T23:26:07+00:00]   [164/270] Radom — Radom, ul. 25 Czerwca (gios_id=510)
+[2026-03-17T23:26:07+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:26:21+00:00]   [2/47] sensor 17245 — Kraków / Kraków, ul. Złoty Róg / benzo(a)piren w PM10 → col=pm10
+[2026-03-17T23:26:21+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/17245 → HTTP Error 400: 
+[2026-03-17T23:26:35+00:00]   [19/56] sensor 2746 — Kraków / Kraków, Aleja Krasińskiego / tlenek azotu → col=None
+[2026-03-17T23:26:35+00:00]     → 18 rows inserted (oldest=2026-03-17T05:00:00, total=206)
+[2026-03-17T23:26:39+00:00]   [165/270] Radom — Radom, ul. Hallera (gios_id=512)
+[2026-03-17T23:26:39+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:26:52+00:00]   [3/47] sensor 16368 — Kraków / Kraków, Os. Piastów / pył zawieszony PM10 → col=pm10
+[2026-03-17T23:26:53+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/16368 → HTTP Error 400: 
+[2026-03-17T23:27:06+00:00]   [20/56] sensor 2747 — Kraków / Kraków, Aleja Krasińskiego / dwutlenek azotu → col=no2
+[2026-03-17T23:27:06+00:00]     → 18 rows inserted (oldest=2026-03-17T05:00:00, total=224)
+[2026-03-17T23:27:10+00:00]   [166/270] Radom — Radom, ul. Tochtermana (gios_id=515)
+[2026-03-17T23:27:10+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:27:24+00:00]   [4/47] sensor 17244 — Kraków / Kraków, Os. Piastów / benzo(a)piren w PM10 → col=pm10
+[2026-03-17T23:27:24+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/17244 → HTTP Error 400: 
+[2026-03-17T23:27:37+00:00]   [21/56] sensor 2748 — Kraków / Kraków, Aleja Krasińskiego / tlenki azotu → col=None
+[2026-03-17T23:27:37+00:00]     → 18 rows inserted (oldest=2026-03-17T05:00:00, total=242)
+[2026-03-17T23:27:41+00:00]   [167/270] Radomsko — Radomsko, ul. Rolna (gios_id=331)
+[2026-03-17T23:27:41+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:27:55+00:00]   [5/47] sensor 17310 — Kraków / Kraków, Os. Wadów / pył zawieszony PM10 → col=pm10
+[2026-03-17T23:27:55+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/17310 → HTTP Error 400: 
+[2026-03-17T23:28:08+00:00]   [22/56] sensor 2750 — Kraków / Kraków, Aleja Krasińskiego / pył zawieszony PM10 → col=pm10
+[2026-03-17T23:28:08+00:00]     → 18 rows inserted (oldest=2026-03-17T05:00:00, total=260)
+[2026-03-17T23:28:12+00:00]   [168/270] Radzyń Podlaski — Radzyń Podlaski, ul. Sitkowskiego (gios_id=275)
+[2026-03-17T23:28:12+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:28:39+00:00]   [23/56] sensor 2752 — Kraków / Kraków, Aleja Krasińskiego / pył zawieszony PM2.5 → col=pm25
+[2026-03-17T23:28:39+00:00]     → 18 rows inserted (oldest=2026-03-17T05:00:00, total=278)
+[2026-03-17T23:28:41+00:00] [harvest-readings] START — 41 sensors to fetch (city=Kraków) | window=last 7d
+[2026-03-17T23:28:41+00:00]   [1/41] sensor 16370 — Kraków / Kraków, ul. Złoty Róg / pył zawieszony PM10 → col=pm10
+[2026-03-17T23:28:41+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/16370 → HTTP Error 400: 
+[2026-03-17T23:28:43+00:00]   [169/270] Rybnik — Rybnik, ul. Borki (gios_id=834)
+[2026-03-17T23:28:43+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:29:10+00:00]   [24/56] sensor 16500 — Kraków / Kraków, Aleja Krasińskiego / benzen → col=c6h6
+[2026-03-17T23:29:11+00:00]     → 17 rows inserted (oldest=2026-03-17T05:00:00, total=295)
+[2026-03-17T23:29:12+00:00]   [2/41] sensor 17245 — Kraków / Kraków, ul. Złoty Róg / benzo(a)piren w PM10 → col=pm10
+[2026-03-17T23:29:12+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/17245 → HTTP Error 400: 
+[2026-03-17T23:29:14+00:00]   [170/270] Rymanów-Zdrój — Rymanów Zdrój, ul. Parkowa (gios_id=10414)
+[2026-03-17T23:29:15+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:29:42+00:00]   [25/56] sensor 2756 — Kraków / Kraków, ul. Bujaka / arsen w PM10 → col=pm10
+[2026-03-17T23:29:42+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2756 → HTTP Error 400: 
+[2026-03-17T23:29:43+00:00]   [3/41] sensor 16368 — Kraków / Kraków, Os. Piastów / pył zawieszony PM10 → col=pm10
+[2026-03-17T23:29:43+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/16368 → HTTP Error 400: 
+[2026-03-17T23:29:46+00:00]   [171/270] Rzeszów — Rzeszów, Al. Piłsudskiego (gios_id=10125)
+[2026-03-17T23:29:46+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:30:13+00:00]   [26/56] sensor 2757 — Kraków / Kraków, ul. Bujaka / benzo(a)antracen w PM10 → col=pm10
+[2026-03-17T23:30:13+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2757 → HTTP Error 400: 
+[2026-03-17T23:30:14+00:00]   [4/41] sensor 17244 — Kraków / Kraków, Os. Piastów / benzo(a)piren w PM10 → col=pm10
+[2026-03-17T23:30:14+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/17244 → HTTP Error 400: 
+[2026-03-17T23:30:17+00:00]   [172/270] Rzeszów — Rzeszów, Al. Rejtana (gios_id=671)
+[2026-03-17T23:30:23+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:30:44+00:00]   [27/56] sensor 2758 — Kraków / Kraków, ul. Bujaka / benzo(a)piren w PM10 → col=pm10
+[2026-03-17T23:30:44+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2758 → HTTP Error 400: 
+[2026-03-17T23:30:45+00:00]   [5/41] sensor 17310 — Kraków / Kraków, Os. Wadów / pył zawieszony PM10 → col=pm10
+[2026-03-17T23:30:45+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/17310 → HTTP Error 400: 
+[2026-03-17T23:30:54+00:00]   [173/270] Rzeszów — Rzeszów, ul. Kwiatkowskiego (gios_id=20201)
+[2026-03-17T23:30:55+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:31:15+00:00]   [28/56] sensor 2759 — Kraków / Kraków, ul. Bujaka / benzo(b)fluoranten w PM10 → col=pm10
+[2026-03-17T23:31:15+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2759 → HTTP Error 400: 
+[2026-03-17T23:31:16+00:00]   [6/41] sensor 17311 — Kraków / Kraków, Os. Wadów / benzo(a)piren w PM10 → col=pm10
+[2026-03-17T23:31:17+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/17311 → HTTP Error 400: 
+[2026-03-17T23:31:26+00:00]   [174/270] Rzeszów — Rzeszów, ul. Starzyńskiego (gios_id=17179)
+[2026-03-17T23:31:26+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:31:46+00:00]   [29/56] sensor 2760 — Kraków / Kraków, ul. Bujaka / benzo(k)fluoranten w PM10 → col=pm10
+[2026-03-17T23:31:46+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2760 → HTTP Error 400: 
+[2026-03-17T23:31:48+00:00]   [7/41] sensor 20319 — Kraków / Kraków, Os. Swoszowice / benzo(a)piren w PM10 → col=pm10
+[2026-03-17T23:31:48+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/20319 → HTTP Error 400: 
+[2026-03-17T23:31:57+00:00]   [175/270] Sanok — Sanok, ul. Sadowa (gios_id=678)
+[2026-03-17T23:31:57+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:32:17+00:00]   [30/56] sensor 2761 — Kraków / Kraków, ul. Bujaka / kadm w PM10 → col=pm10
+[2026-03-17T23:32:17+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2761 → HTTP Error 400: 
+[2026-03-17T23:32:19+00:00]   [8/41] sensor 20321 — Kraków / Kraków, Os. Swoszowice / pył zawieszony PM10 → col=pm10
+[2026-03-17T23:32:19+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/20321 → HTTP Error 400: 
+[2026-03-17T23:32:28+00:00]   [176/270] Siedlce — Siedlce, ul. Konarskiego (gios_id=517)
+[2026-03-17T23:32:28+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:32:48+00:00]   [31/56] sensor 2762 — Kraków / Kraków, ul. Bujaka / dibenzo(a,h)antracen w PM10 → col=pm10
+[2026-03-17T23:32:49+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2762 → HTTP Error 400: 
+[2026-03-17T23:32:50+00:00]   [9/41] sensor 16500 — Kraków / Kraków, Aleja Krasińskiego / benzen → col=c6h6
+[2026-03-17T23:32:50+00:00]     → 17 rows inserted (oldest=2026-03-17T05:00:00+00:00, total=17)
+[2026-03-17T23:32:59+00:00]   [177/270] Sieradz — Sieradz, ul. Polna (gios_id=10140)
+[2026-03-17T23:32:59+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:33:20+00:00]   [32/56] sensor 2763 — Kraków / Kraków, ul. Bujaka / indeno(1,2,3-cd)piren w PM10 → col=pm10
+[2026-03-17T23:33:20+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2763 → HTTP Error 400: 
+[2026-03-17T23:33:21+00:00]   [10/41] sensor 2756 — Kraków / Kraków, ul. Bujaka / arsen w PM10 → col=pm10
+[2026-03-17T23:33:21+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2756 → HTTP Error 400: 
+[2026-03-17T23:33:30+00:00]   [178/270] Skawina — Skawina, Os. Ogrody (gios_id=437)
+[2026-03-17T23:33:30+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:33:51+00:00]   [33/56] sensor 2764 — Kraków / Kraków, ul. Bujaka / nikiel w PM10 → col=pm10
+[2026-03-17T23:33:51+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2764 → HTTP Error 400: 
+[2026-03-17T23:33:52+00:00]   [11/41] sensor 2757 — Kraków / Kraków, ul. Bujaka / benzo(a)antracen w PM10 → col=pm10
+[2026-03-17T23:33:52+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2757 → HTTP Error 400: 
+[2026-03-17T23:34:01+00:00]   [179/270] Skierniewice — Skierniewice, ul. Konopnickiej (gios_id=9236)
+[2026-03-17T23:34:18+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:34:33+00:00]   [34/56] sensor 2765 — Kraków / Kraków, ul. Bujaka / tlenek azotu → col=None
+[2026-03-17T23:34:33+00:00]     → 20 rows inserted (oldest=2026-03-17T05:00:00, total=315)
+[2026-03-17T23:34:34+00:00]   [12/41] sensor 2758 — Kraków / Kraków, ul. Bujaka / benzo(a)piren w PM10 → col=pm10
+[2026-03-17T23:34:34+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2758 → HTTP Error 400: 
+[2026-03-17T23:34:49+00:00]   [180/270] Smolary Bytnickie — Smolary Bytnickie (gios_id=374)
+[2026-03-17T23:34:49+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:38:27+00:00]   [35/56] sensor 2766 — Kraków / Kraków, ul. Bujaka / dwutlenek azotu → col=no2
+[2026-03-17T23:38:27+00:00]     → 20 rows inserted (oldest=2026-03-17T05:00:00, total=335)
+[2026-03-17T23:38:29+00:00]   [13/41] sensor 2759 — Kraków / Kraków, ul. Bujaka / benzo(b)fluoranten w PM10 → col=pm10
+[2026-03-17T23:38:29+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2759 → HTTP Error 400: 
+[2026-03-17T23:38:44+00:00]   [181/270] Solec Kujawski — Solec Kujawski, ul. Tartaczna 10 (gios_id=20591)
+[2026-03-17T23:38:44+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:38:58+00:00]   [36/56] sensor 2767 — Kraków / Kraków, ul. Bujaka / tlenki azotu → col=None
+[2026-03-17T23:38:59+00:00]     → 20 rows inserted (oldest=2026-03-17T05:00:00, total=355)
+[2026-03-17T23:39:00+00:00]   [14/41] sensor 2760 — Kraków / Kraków, ul. Bujaka / benzo(k)fluoranten w PM10 → col=pm10
+[2026-03-17T23:39:00+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2760 → HTTP Error 400: 
+[2026-03-17T23:43:28+00:00]   [182/270] Solec Zdrój — Solec-Zdrój, ul. Leśna (gios_id=20568)
+[2026-03-17T23:43:28+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:43:43+00:00]   [37/56] sensor 2768 — Kraków / Kraków, ul. Bujaka / ozon → col=o3
+[2026-03-17T23:43:43+00:00]     → 20 rows inserted (oldest=2026-03-17T05:00:00, total=375)
+[2026-03-17T23:43:44+00:00]   [15/41] sensor 2761 — Kraków / Kraków, ul. Bujaka / kadm w PM10 → col=pm10
+[2026-03-17T23:43:44+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2761 → HTTP Error 400: 
+[2026-03-17T23:43:59+00:00]   [183/270] Sopot — Sopot, ul. Bitwy Pod Płowcami (gios_id=16242)
+[2026-03-17T23:43:59+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:48:27+00:00]   [38/56] sensor 2769 — Kraków / Kraków, ul. Bujaka / ołów w PM10 → col=pm10
+[2026-03-17T23:48:27+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2769 → HTTP Error 400: 
+[2026-03-17T23:48:28+00:00]   [16/41] sensor 2762 — Kraków / Kraków, ul. Bujaka / dibenzo(a,h)antracen w PM10 → col=pm10
+[2026-03-17T23:48:32+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2762 → HTTP Error 400: 
+[2026-03-17T23:48:43+00:00]   [184/270] Sosnowiec — Sosnowiec, ul. Lubelska (gios_id=837)
+[2026-03-17T23:48:44+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:48:58+00:00]   [39/56] sensor 2770 — Kraków / Kraków, ul. Bujaka / pył zawieszony PM10 → col=pm10
+[2026-03-17T23:48:58+00:00]     → 19 rows inserted (oldest=2026-03-17T05:00:00, total=394)
+[2026-03-17T23:49:03+00:00]   [17/41] sensor 2763 — Kraków / Kraków, ul. Bujaka / indeno(1,2,3-cd)piren w PM10 → col=pm10
+[2026-03-17T23:49:04+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2763 → HTTP Error 400: 
+[2026-03-17T23:53:28+00:00]   [185/270] Stalowa Wola — Stalowa Wola, ul. Wojska Polskiego (gios_id=10126)
+[2026-03-17T23:53:28+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:53:42+00:00]   [40/56] sensor 2771 — Kraków / Kraków, ul. Bujaka / pył zawieszony PM10 → col=pm10
+[2026-03-17T23:53:42+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2771 → HTTP Error 400: 
+[2026-03-17T23:53:48+00:00]   [18/41] sensor 2764 — Kraków / Kraków, ul. Bujaka / nikiel w PM10 → col=pm10
+[2026-03-17T23:53:48+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2764 → HTTP Error 400: 
+[2026-03-17T23:53:59+00:00]   [186/270] Starachowice — Starachowice, ul. Złota (gios_id=785)
+[2026-03-17T23:53:59+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:58:27+00:00]   [41/56] sensor 2773 — Kraków / Kraków, ul. Bujaka / pył zawieszony PM2.5 → col=pm25
+[2026-03-17T23:58:27+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2773 → HTTP Error 400: 
+[2026-03-17T23:58:32+00:00]   [19/41] sensor 2765 — Kraków / Kraków, ul. Bujaka / tlenek azotu → col=None
+[2026-03-17T23:58:32+00:00]     → 20 rows inserted (oldest=2026-03-17T05:00:00+00:00, total=37)
+[2026-03-17T23:58:43+00:00]   [187/270] Sucha Beskidzka — Sucha Beskidzka, ul. Nieszczyńskiej (gios_id=10124)
+[2026-03-17T23:58:43+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-17T23:58:58+00:00]   [42/56] sensor 2774 — Kraków / Kraków, ul. Bujaka / dwutlenek siarki → col=so2
+[2026-03-17T23:58:58+00:00]     → 20 rows inserted (oldest=2026-03-17T05:00:00, total=414)
+[2026-03-17T23:59:03+00:00]   [20/41] sensor 2766 — Kraków / Kraków, ul. Bujaka / dwutlenek azotu → col=no2
+[2026-03-17T23:59:03+00:00]     → 20 rows inserted (oldest=2026-03-17T05:00:00+00:00, total=57)
+[2026-03-18T00:16:08+00:00]   [188/270] Sulęcin — Sulęcin ul. Dudka (gios_id=376)
+[2026-03-18T00:16:08+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T00:16:23+00:00]   [43/56] sensor 15249 — Kraków / Kraków, ul. Bujaka / benzo(j)fluoranten w PM10 → col=pm10
+[2026-03-18T00:16:23+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/15249 → HTTP Error 400: 
+[2026-03-18T00:16:29+00:00]   [21/41] sensor 2767 — Kraków / Kraków, ul. Bujaka / tlenki azotu → col=None
+[2026-03-18T00:16:29+00:00]     → 20 rows inserted (oldest=2026-03-17T06:00:00+00:00, total=77)
+[2026-03-18T00:16:39+00:00]   [189/270] Suwałki — Suwałki, ul. Pułaskiego 26 (gios_id=11154)
+[2026-03-18T00:16:40+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T00:32:55+00:00]   [44/56] sensor 2775 — Kraków / Kraków, ul. Bulwarowa / arsen w PM10 → col=pm10
+[2026-03-18T00:32:55+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2775 → HTTP Error 400: 
+[2026-03-18T00:33:01+00:00]   [22/41] sensor 2768 — Kraków / Kraków, ul. Bujaka / ozon → col=o3
+[2026-03-18T00:33:01+00:00]     → 20 rows inserted (oldest=2026-03-17T06:00:00+00:00, total=97)
+[2026-03-18T00:33:11+00:00]   [190/270] Szarów — Szarów, ul. Spokojna (gios_id=9179)
+[2026-03-18T00:33:11+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T00:33:26+00:00]   [45/56] sensor 2777 — Kraków / Kraków, ul. Bulwarowa / benzo(a)piren w PM10 → col=pm10
+[2026-03-18T00:33:26+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2777 → HTTP Error 400: 
+[2026-03-18T00:33:32+00:00]   [23/41] sensor 2769 — Kraków / Kraków, ul. Bujaka / ołów w PM10 → col=pm10
+[2026-03-18T00:33:32+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2769 → HTTP Error 400: 
+[2026-03-18T00:48:47+00:00]   [191/270] Szczawno-Zdrój — Szczawno-Zdrój, ul. Kolejowa (gios_id=93)
+[2026-03-18T00:48:47+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T00:49:01+00:00]   [46/56] sensor 2779 — Kraków / Kraków, ul. Bulwarowa / benzen → col=c6h6
+[2026-03-18T00:49:02+00:00]     → 20 rows inserted (oldest=2026-03-17T06:00:00, total=434)
+[2026-03-18T00:49:08+00:00]   [24/41] sensor 2770 — Kraków / Kraków, ul. Bujaka / pył zawieszony PM10 → col=pm10
+[2026-03-18T00:49:08+00:00]     → 19 rows inserted (oldest=2026-03-17T06:00:00+00:00, total=116)
+[2026-03-18T00:49:18+00:00]   [192/270] Szczecin — Szczecin, ul. Andrzejewskiego (gios_id=986)
+[2026-03-18T00:49:18+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T00:49:33+00:00]   [47/56] sensor 2781 — Kraków / Kraków, ul. Bulwarowa / kadm w PM10 → col=pm10
+[2026-03-18T00:49:33+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2781 → HTTP Error 400: 
+[2026-03-18T00:49:39+00:00]   [25/41] sensor 2771 — Kraków / Kraków, ul. Bujaka / pył zawieszony PM10 → col=pm10
+[2026-03-18T00:49:39+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2771 → HTTP Error 400: 
+[2026-03-18T00:49:49+00:00]   [193/270] Szczecin — Szczecin, ul. Piłsudskiego (gios_id=987)
+[2026-03-18T00:49:49+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T01:06:12+00:00]   [48/56] sensor 2785 — Kraków / Kraków, ul. Bulwarowa / nikiel w PM10 → col=pm10
+[2026-03-18T01:06:13+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2785 → HTTP Error 400: 
+[2026-03-18T01:06:19+00:00]   [26/41] sensor 2773 — Kraków / Kraków, ul. Bujaka / pył zawieszony PM2.5 → col=pm25
+[2026-03-18T01:06:19+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2773 → HTTP Error 400: 
+[2026-03-18T01:06:28+00:00]   [194/270] Szczecin — Szczecin, ul. Łączna (gios_id=989)
+[2026-03-18T01:06:29+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T01:06:44+00:00]   [49/56] sensor 2787 — Kraków / Kraków, ul. Bulwarowa / tlenek azotu → col=None
+[2026-03-18T01:22:07+00:00]   [27/41] sensor 2774 — Kraków / Kraków, ul. Bujaka / dwutlenek siarki → col=so2
+[2026-03-18T01:22:13+00:00]     → 20 rows inserted (oldest=2026-03-17T06:00:00+00:00, total=136)
+[2026-03-18T01:22:16+00:00]   [195/270] Szczecinek — Szczecinek, ul. 1 Maja (gios_id=981)
+[2026-03-18T01:22:16+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T01:22:29+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2787 → <urlopen error [Errno 60] Operation timed out>
+[2026-03-18T01:22:44+00:00]   [28/41] sensor 15249 — Kraków / Kraków, ul. Bujaka / benzo(j)fluoranten w PM10 → col=pm10
+[2026-03-18T01:22:44+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/15249 → HTTP Error 400: 
+[2026-03-18T01:22:47+00:00]   [196/270] Szczecinek — Szczecinek, ul. Przemysłowa (gios_id=983)
+[2026-03-18T01:22:47+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T01:32:45+00:00]   [50/56] sensor 2788 — Kraków / Kraków, ul. Bulwarowa / dwutlenek azotu → col=no2
+[2026-03-18T01:32:45+00:00]     → 20 rows inserted (oldest=2026-03-17T06:00:00, total=454)
+[2026-03-18T01:33:01+00:00]   [29/41] sensor 2775 — Kraków / Kraków, ul. Bulwarowa / arsen w PM10 → col=pm10
+[2026-03-18T01:33:01+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2775 → HTTP Error 400: 
+[2026-03-18T01:33:04+00:00]   [197/270] Szlichtyngowa — Szlichtyngowa, ul. Przemysłowa (gios_id=20548)
+[2026-03-18T01:33:04+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T01:33:17+00:00]   [51/56] sensor 2789 — Kraków / Kraków, ul. Bulwarowa / tlenki azotu → col=None
+[2026-03-18T01:33:17+00:00]     → 20 rows inserted (oldest=2026-03-17T06:00:00, total=474)
+[2026-03-18T01:48:51+00:00]   [30/41] sensor 2777 — Kraków / Kraków, ul. Bulwarowa / benzo(a)piren w PM10 → col=pm10
+[2026-03-18T01:48:51+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2777 → HTTP Error 400: 
+[2026-03-18T01:48:54+00:00]   [198/270] Szymbark — Szymbark (gios_id=443)
+[2026-03-18T01:48:54+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T01:49:06+00:00]   [52/56] sensor 2790 — Kraków / Kraków, ul. Bulwarowa / ołów w PM10 → col=pm10
+[2026-03-18T01:49:06+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2790 → HTTP Error 400: 
+[2026-03-18T01:49:22+00:00]   [31/41] sensor 2779 — Kraków / Kraków, ul. Bulwarowa / benzen → col=c6h6
+[2026-03-18T01:49:22+00:00]     → 20 rows inserted (oldest=2026-03-17T06:00:00+00:00, total=156)
+[2026-03-18T01:49:25+00:00]   [199/270] Słupsk — Słupsk, ul. Kniaziewicza (gios_id=725)
+[2026-03-18T01:49:25+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T01:49:37+00:00]   [53/56] sensor 2792 — Kraków / Kraków, ul. Bulwarowa / pył zawieszony PM10 → col=pm10
+[2026-03-18T01:49:38+00:00]     → 20 rows inserted (oldest=2026-03-17T06:00:00, total=494)
+[2026-03-18T02:05:10+00:00]   [32/41] sensor 2781 — Kraków / Kraków, ul. Bulwarowa / kadm w PM10 → col=pm10
+[2026-03-18T02:05:10+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2781 → HTTP Error 400: 
+[2026-03-18T02:05:13+00:00]   [200/270] Tarnobrzeg — Tarnobrzeg, ul. Dąbrowskiej (gios_id=684)
+[2026-03-18T02:05:13+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T02:05:25+00:00]   [54/56] sensor 2793 — Kraków / Kraków, ul. Bulwarowa / pył zawieszony PM10 → col=pm10
+[2026-03-18T02:05:26+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2793 → HTTP Error 400: 
+[2026-03-18T02:05:41+00:00]   [33/41] sensor 2785 — Kraków / Kraków, ul. Bulwarowa / nikiel w PM10 → col=pm10
+[2026-03-18T02:05:41+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2785 → HTTP Error 400: 
+[2026-03-18T02:05:44+00:00]   [201/270] Tarnowskie Góry — Tarnowskie Góry, ul. Litewska (gios_id=839)
+[2026-03-18T02:05:44+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T02:21:00+00:00]   [55/56] sensor 2794 — Kraków / Kraków, ul. Bulwarowa / pył zawieszony PM2.5 → col=pm25
+[2026-03-18T02:21:01+00:00]     → 20 rows inserted (oldest=2026-03-17T08:00:00, total=514)
+[2026-03-18T02:21:16+00:00]   [34/41] sensor 2787 — Kraków / Kraków, ul. Bulwarowa / tlenek azotu → col=None
+[2026-03-18T02:21:17+00:00]     → 20 rows inserted (oldest=2026-03-17T08:00:00+00:00, total=176)
+[2026-03-18T02:21:19+00:00]   [202/270] Tarnów — Tarnów, ul. Bitwy pod Studziankami (gios_id=444)
+[2026-03-18T02:21:19+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T02:21:32+00:00]   [56/56] sensor 2797 — Kraków / Kraków, ul. Bulwarowa / dwutlenek siarki → col=so2
+[2026-03-18T02:21:32+00:00]     → 20 rows inserted (oldest=2026-03-17T08:00:00, total=534)
+[2026-03-18T02:21:32+00:00] [harvest-readings] DONE — sensors=56 readings=534 errors=28
+[2026-03-18T02:37:07+00:00]   [35/41] sensor 2788 — Kraków / Kraków, ul. Bulwarowa / dwutlenek azotu → col=no2
+[2026-03-18T02:37:08+00:00]     → 20 rows inserted (oldest=2026-03-17T08:00:00+00:00, total=196)
+[2026-03-18T02:37:09+00:00]   [203/270] Tarnów — Tarnów, ul. Ks. Romana Sitko (gios_id=10120)
+[2026-03-18T02:37:10+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T02:37:39+00:00]   [36/41] sensor 2789 — Kraków / Kraków, ul. Bulwarowa / tlenki azotu → col=None
+[2026-03-18T02:37:39+00:00]     → 20 rows inserted (oldest=2026-03-17T08:00:00+00:00, total=216)
+[2026-03-18T02:37:41+00:00]   [204/270] Tczew — Tczew, ul. Czyżykowska (gios_id=20607)
+[2026-03-18T02:37:41+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T02:53:15+00:00]   [37/41] sensor 2790 — Kraków / Kraków, ul. Bulwarowa / ołów w PM10 → col=pm10
+[2026-03-18T02:53:16+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2790 → HTTP Error 400: 
+[2026-03-18T02:53:17+00:00]   [205/270] Tomaszów Lubelski — Tomaszów Lubelski, ul. Janusza Petera (gios_id=20277)
+[2026-03-18T02:53:17+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T02:53:49+00:00]   [38/41] sensor 2792 — Kraków / Kraków, ul. Bulwarowa / pył zawieszony PM10 → col=pm10
+[2026-03-18T02:53:49+00:00]     → 20 rows inserted (oldest=2026-03-17T08:00:00+00:00, total=236)
+[2026-03-18T02:53:51+00:00]   [206/270] Tomaszów Mazowiecki — Tomaszów Mazowiecki ul. Św. Antoniego (gios_id=345)
+[2026-03-18T02:53:51+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T02:54:20+00:00]   [39/41] sensor 2793 — Kraków / Kraków, ul. Bulwarowa / pył zawieszony PM10 → col=pm10
+[2026-03-18T02:54:20+00:00]   ERROR: https://api.gios.gov.pl/pjp-api/v1/rest/data/getData/2793 → HTTP Error 400: 
+[2026-03-18T02:54:22+00:00]   [207/270] Toruń — Toruń, ul. Dziewulskiego (gios_id=206)
+[2026-03-18T02:54:22+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T03:11:24+00:00]   [40/41] sensor 2794 — Kraków / Kraków, ul. Bulwarowa / pył zawieszony PM2.5 → col=pm25
+[2026-03-18T03:11:24+00:00]     → 19 rows inserted (oldest=2026-03-17T09:00:00+00:00, total=255)
+[2026-03-18T03:11:26+00:00]   [208/270] Toruń — Toruń, ul. Przy Kaszowniku (gios_id=208)
+[2026-03-18T03:11:26+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T03:27:38+00:00]   [41/41] sensor 2797 — Kraków / Kraków, ul. Bulwarowa / dwutlenek siarki → col=so2
+[2026-03-18T03:27:38+00:00]     → 20 rows inserted (oldest=2026-03-17T09:00:00+00:00, total=275)
+[2026-03-18T03:27:38+00:00] [harvest-readings] DONE — sensors=41 readings=275 errors=27
+[2026-03-18T03:27:39+00:00]   [209/270] Toruń — Toruń, ul. Wały gen. Sikorskiego (gios_id=145)
+[2026-03-18T03:27:40+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T03:28:11+00:00]   [210/270] Trzebinia — Trzebinia, Os. Związku Walki Młodych (gios_id=449)
+[2026-03-18T03:28:11+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T03:44:32+00:00]   [211/270] Trzebnica — Trzebnica, ul. 3 Maja (gios_id=11934)
+[2026-03-18T03:44:32+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T04:02:21+00:00]   [212/270] Tuchów — Tuchów, ul. Chopina (gios_id=450)
+[2026-03-18T04:02:21+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T04:02:52+00:00]   [213/270] Tychy — Tychy, ul. Tołstoja (gios_id=841)
+[2026-03-18T04:02:52+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T04:09:59+00:00]   [214/270] Uniejów — Uniejów, ul. Zamkowa (gios_id=10059)
+[2026-03-18T04:09:59+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T04:25:42+00:00]   [215/270] Ustroń — Ustroń, ul. Sanatoryjna (gios_id=842)
+[2026-03-18T04:25:42+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T04:26:13+00:00]   [216/270] Uście Gorlickie Wysowa — Wysowa-Zdrój, Park Zdrojowy (gios_id=17118)
+[2026-03-18T04:26:14+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T04:41:52+00:00]   [217/270] Warszawa — Warszawa, Al. Niepodległości (gios_id=530)
+[2026-03-18T04:41:53+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T04:42:24+00:00]   [218/270] Warszawa — Warszawa, Al. Solidarności (gios_id=20488)
+[2026-03-18T04:42:24+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T04:58:56+00:00]   [219/270] Warszawa — Warszawa, IMGW (gios_id=16533)
+[2026-03-18T04:58:56+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T05:16:58+00:00]   [220/270] Warszawa — Warszawa, ul. Bajkowa (gios_id=10956)
+[2026-03-18T05:16:59+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T05:17:30+00:00]   [221/270] Warszawa — Warszawa, ul. Chrościckiego (gios_id=10955)
+[2026-03-18T05:17:30+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T05:28:22+00:00]   [222/270] Warszawa — Warszawa, ul. Grochowska (gios_id=20487)
+[2026-03-18T05:28:23+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T05:45:39+00:00]   [223/270] Warszawa — Warszawa, ul. Kondratowicza (gios_id=552)
+[2026-03-18T05:45:40+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T05:46:11+00:00]   [224/270] Warszawa — Warszawa, ul. Krzywoń (gios_id=532)
+[2026-03-18T05:46:11+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T06:02:02+00:00]   [225/270] Warszawa — Warszawa, ul. Tołstoja (gios_id=538)
+[2026-03-18T06:02:03+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T06:02:34+00:00]   [226/270] Warszawa — Warszawa, ul. Wokalna (gios_id=550)
+[2026-03-18T06:02:34+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T06:04:29+00:00]   [227/270] Wałbrzych — Wałbrzych, ul. Wysockiego (gios_id=109)
+[2026-03-18T06:04:29+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T06:20:47+00:00]   [228/270] Wejherowo — Wejherowo, ul. Dworcowa (gios_id=16397)
+[2026-03-18T06:20:47+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T06:21:18+00:00]   [229/270] Widuchowa — Widuchowa (gios_id=961)
+[2026-03-18T06:21:18+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T06:37:21+00:00]   [230/270] Wieluń — Wieluń, ul. POW (gios_id=347)
+[2026-03-18T06:37:21+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T06:53:10+00:00]   [231/270] Wieniec-Zdrój — Wieniec Zdrój, ul. Wieniecka (gios_id=10854)
+[2026-03-18T06:53:10+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T06:53:41+00:00]   [232/270] Wilczopole — Wilczopole (gios_id=282)
+[2026-03-18T06:53:41+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T07:09:38+00:00]   [233/270] Wodzisław Śląski — Wodzisław Śląski, ul. Gałczyńskiego (gios_id=845)
+[2026-03-18T07:09:38+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T07:25:16+00:00]   [234/270] Wrocław — Wrocław, Al. Wiśniowa (gios_id=129)
+[2026-03-18T07:25:16+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T07:25:47+00:00]   [235/270] Wrocław — Wrocław, ul. Bartnicza (gios_id=114)
+[2026-03-18T07:25:47+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T07:29:19+00:00]   [236/270] Wrocław — Wrocław, ul. Na Grobli (gios_id=115)
+[2026-03-18T07:29:20+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T07:41:02+00:00]   [237/270] Wrocław — Wrocław, ul. Orzechowa (gios_id=122)
+[2026-03-18T07:41:03+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T07:41:34+00:00]   [238/270] Wrocław — Wrocław, wyb. Conrada-Korzeniowskiego (gios_id=117)
+[2026-03-18T07:41:34+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T07:42:18+00:00]   [239/270] Wschowa — Wschowa ul. Kazimierza Wielkiego (gios_id=379)
+[2026-03-18T07:42:18+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T07:42:49+00:00]   [240/270] Wysokie Mazowieckie — Wysokie Mazowieckie, ul. 1 Maja (gios_id=20140)
+[2026-03-18T07:42:49+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T07:57:26+00:00]   [241/270] Wągrowiec — Wągrowiec, ul. Lipowa (gios_id=942)
+[2026-03-18T07:57:26+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T07:57:57+00:00]   [242/270] Włocławek — Włocławek, ul. Gniazdowskiego (gios_id=10694)
+[2026-03-18T07:57:58+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T07:58:29+00:00]   [243/270] Włocławek — Włocławek, ul. Kaliska (gios_id=9791)
+[2026-03-18T07:58:29+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T07:59:00+00:00]   [244/270] Włocławek — Włocławek, ul. Okrzei (gios_id=225)
+[2026-03-18T07:59:00+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T07:59:31+00:00]   [245/270] Zabierzów — Zabierzów, ul. Wapienna (gios_id=11434)
+[2026-03-18T07:59:31+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:00:02+00:00]   [246/270] Zabrze — Zabrze, ul. M. Skłodowskiej-Curie (gios_id=17880)
+[2026-03-18T08:00:02+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:00:33+00:00]   [247/270] Zakopane — Zakopane, ul. Sienkiewicza (gios_id=459)
+[2026-03-18T08:00:33+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:01:04+00:00]   [248/270] Zamość — Zamość, ul. Hrubieszowska (gios_id=285)
+[2026-03-18T08:01:04+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:01:35+00:00]   [249/270] Zawiercie — Zawiercie, ul. K.I.Gałczyńskiego (gios_id=11455)
+[2026-03-18T08:01:36+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:02:07+00:00]   [250/270] Zduńska Wola — Zduńska Wola, ul. Królewska (gios_id=350)
+[2026-03-18T08:02:07+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:02:38+00:00]   [251/270] Zdzieszowice — Zdzieszowice, ul. Piastów (gios_id=600)
+[2026-03-18T08:02:38+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:03:09+00:00]   [252/270] Zgierz — Zgierz, ul. Mielczarskiego (gios_id=355)
+[2026-03-18T08:03:09+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:03:40+00:00]   [253/270] Zgorzelec — Zgorzelec, ul. Bohaterów Getta (gios_id=134)
+[2026-03-18T08:03:40+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:04:11+00:00]   [254/270] Zielona Góra — Zielona Góra ul. Krótka (gios_id=387)
+[2026-03-18T08:04:11+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:04:42+00:00]   [255/270] Zielona Góra — Zielona Góra,ul.Wyszyńskiego (gios_id=11294)
+[2026-03-18T08:04:42+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:05:13+00:00]   [256/270] Zielonka — Zielonka, Bory Tucholskie (gios_id=232)
+[2026-03-18T08:05:14+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:05:45+00:00]   [257/270] Złockie — Złockie, szkoła podstawowa (gios_id=10817)
+[2026-03-18T08:05:45+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:06:16+00:00]   [258/270] Złoty Potok — Złoty Potok, Leśniczówka (gios_id=853)
+[2026-03-18T08:06:16+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:06:47+00:00]   [259/270] Łask — Łask, ul. Narutowicza (gios_id=11554)
+[2026-03-18T08:06:47+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:07:18+00:00]   [260/270] Łeba — Łeba, IMGW (gios_id=750)
+[2026-03-18T08:07:18+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:08:18+00:00]   [261/270] Łomża — Łomża, ul. Sikorskiego (gios_id=618)
+[2026-03-18T08:08:18+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:08:49+00:00]   [262/270] Łódź — Łódź, Al. Jana Pawła II (gios_id=10058)
+[2026-03-18T08:08:49+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:09:20+00:00]   [263/270] Łódź — Łódź, ul. Czernika (gios_id=295)
+[2026-03-18T08:09:20+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:09:51+00:00]   [264/270] Łódź — Łódź, ul. Gdańska (gios_id=296)
+[2026-03-18T08:09:51+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:10:03+00:00] [harvest-aqi-snapshot] START — 289 stations
+[2026-03-18T08:10:22+00:00]   [265/270] Łódź — Łódź, ul. Legionów (gios_id=302)
+[2026-03-18T08:10:28+00:00]     ⚠ insert error: database is locked
+[2026-03-18T08:10:28+00:00]   [50/289] inserted=50 skipped=0 errors=0
+[2026-03-18T08:10:33+00:00]     ⚠ insert error: database is locked
+[2026-03-18T08:10:38+00:00]     ⚠ insert error: database is locked
+[2026-03-18T08:10:43+00:00]   [100/289] inserted=100 skipped=0 errors=0
+[2026-03-18T08:10:43+00:00]     ⚠ insert error: database is locked
+[2026-03-18T08:10:48+00:00]     ⚠ insert error: database is locked
+[2026-03-18T08:10:54+00:00]     ⚠ insert error: database is locked
+[2026-03-18T08:10:59+00:00]     ⚠ insert error: database is locked
+[2026-03-18T08:11:04+00:00]     ⚠ insert error: database is locked
+[2026-03-18T08:11:05+00:00]   [150/289] inserted=150 skipped=0 errors=0
+[2026-03-18T08:11:09+00:00]     ⚠ insert error: database is locked
+[2026-03-18T08:11:14+00:00]     ⚠ insert error: database is locked
+[2026-03-18T08:11:18+00:00]   [200/289] inserted=200 skipped=0 errors=0
+[2026-03-18T08:11:20+00:00]     ⚠ insert error: database is locked
+[2026-03-18T08:11:25+00:00]     ⚠ insert error: database is locked
+[2026-03-18T08:11:30+00:00]     ⚠ insert error: database is locked
+[2026-03-18T08:11:30+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:11:30+00:00]   [250/289] inserted=250 skipped=0 errors=0
+[2026-03-18T08:11:40+00:00]   [289/289] inserted=289 skipped=0 errors=0
+[2026-03-18T08:11:40+00:00] [harvest-aqi-snapshot] DONE — inserted=289 skipped=0 errors=0
+[2026-03-18T08:12:01+00:00]   [266/270] Świdnica — Świdnica, ul. Folwarczna (gios_id=10141)
+[2026-03-18T08:12:01+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:12:32+00:00]   [267/270] Żary — Żary, ul. Szymanowskiego  (gios_id=382)
+[2026-03-18T08:12:32+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:13:03+00:00]   [268/270] Żory — Żory, Os. Gen. Władysława Sikorskiego (gios_id=10554)
+[2026-03-18T08:13:04+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:13:35+00:00]   [269/270] Żyrardów — Żyrardów, ul. Roosevelta (gios_id=562)
+[2026-03-18T08:13:35+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:14:06+00:00]   [270/270] Żywiec — Żywiec, ul. Kopernika (gios_id=856)
+[2026-03-18T08:14:06+00:00]     → 0 sensors added (total so far: 424)
+[2026-03-18T08:14:06+00:00] [harvest-sensors] DONE — stations=270 sensors=424 errors=2
